@@ -1,2 +1,117 @@
-# mri-adaptivity-paper
-Test codes and plotting scripts for publication on multirate temporal adaptivity
+# MRI Adaptivity Paper Codes
+
+This is a repository of [SUNDIALS](https://github.com/LLNL/sundials)-based applications to assess and demonstrate the performance of new capabilities for multirate temporal adaptivity that have been added to ARKODE as part of the [FASTMath SciDAC Institute](https://scidac5-fastmath.lbl.gov/).
+
+
+## Installation
+
+The following steps describe how to build the demonstration code in a Linux or MacOS environment.
+
+
+### Gettting the Code
+
+To obtain the code, clone this repository with Git:
+
+```bash
+  git clone https://github.com/sundials-codes/mri-adaptivity-paper.git
+```
+
+
+### Requirements
+
+To compile the codes in this repository you will need:
+
+* [CMake](https://cmake.org) 3.20 or newer (both for SUNDIALS and for this repository)
+
+* C compiler (C99 standard) and C++ compiler (C++17 standard)
+
+* Python
+
+
+The codes in this repository depend on two branches of the [SUNDIALS](https://github.com/LLNL/sundials) library.  These two specific versions will be cloned from GitHub as submodules of this repository.  After cloning this repository using the command above, retrieve these submodules via:
+
+```bash
+  cd mri-adaptivity-paper
+  git submodule init
+  git submodule update
+```
+
+Additionally, the Python postprocessing scripts in this repository require a number of additional packages, including [NumPy](https://numpy.org/), [Matplotlib](https://matplotlib.org/), and [Pandas](https://pandas.pydata.org/).
+
+
+### Building the Dependencies
+
+We recommend that users follow the instructios below for installing both versions of SUNDIALS.
+
+#### SUNDIALS
+
+[The SUNDIALS build instructions are linked here](https://sundials.readthedocs.io/en/latest/sundials/Install_link.html#building-and-installing-with-cmake).  Note that of the many SUNDIALS build options, this repository requires only a minimal SUNDIALS build with additional logging enabled.  The following steps can be used to build SUNDIALS using this minimal configuration:
+
+```bash
+mkdir sundials-v7.3.0/build
+cd sundials-v7.3.0/build
+cmake -DCMAKE_INSTALL_PREFIX=../install -DSUNDIALS_LOGGING_LEVEL=4 ..
+make -j install
+cd -
+
+mkdir sundials-mrihh/build
+cd sundials-mrihh/build
+cmake -DCMAKE_INSTALL_PREFIX=../install -DSUNDIALS_LOGGING_LEVEL=4 ..
+make -j install
+cd -
+```
+
+Instructions for building SUNDIALS with additional options [may be found here](https://sundials.readthedocs.io/en/latest/sundials/Install_link.html).
+
+#### Python packages
+
+Since each of NumPy, Matplotlib, and Pandas are widely used, it is likely that these are already installed on your system.  However, if those are missing or need to be updated, then we recommend that these be installed in a Python virtual environment, as follows:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r python_requirements.txt
+```
+
+You may "deactivate" this Python environment from your current shell with the command
+
+```bash
+deactivate
+```
+
+and in the future you can "reactivate" the python environment in your shell by running from the top-level directory of this repository
+
+```bash
+source .venv/bin/activate
+```
+
+
+### Building
+
+The codes that will link to each of the two above SUNDIALS installations must be configured and built in separate phases.  Like most CMake-based projects, in-source builds are not permitted, so the code should be configured and built from a separate build directory.  If the steps above were followed to build the two relevant versions of SUNDIALS, then the test codes in this repository may be built with the commands:
+
+```bash
+  cd src-mrihh
+  mkdir build
+  cd build
+  cmake ..
+  make -j install
+  cd ../../
+
+  cd src-v7.3.0
+  mkdir build
+  cd build
+  cmake ..
+  make -j install
+  cd ../../
+```
+When these complete, the following executables should each be in the top-level `bin` folder:
+`ark_kpr_nestedmri`,
+`ark_test_accumerror_brusselator`,
+`ark_test_accumerror_kpr`,
+`ark_test_brusselator_mriadapt`,
+`ark_test_brusselator_mriadapt_hh`,
+`ark_test_kpr_mriadapt`,
+`ark_test_kpr_mriadapt_hh`,
+`ark_test_slowerror_brusselator`, and
+`ark_test_slowerror_kpr`.
