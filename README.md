@@ -2,11 +2,9 @@
 
 This is a repository of [SUNDIALS](https://github.com/LLNL/sundials)-based applications to assess and demonstrate the performance of new capabilities for multirate temporal adaptivity that have been added to ARKODE as part of the [FASTMath SciDAC Institute](https://scidac5-fastmath.lbl.gov/).
 
-
 ## Installation
 
 The following steps describe how to build the demonstration code in a Linux or MacOS environment.
-
 
 ### Gettting the Code
 
@@ -15,7 +13,6 @@ To obtain the code, clone this repository with Git:
 ```bash
   git clone https://github.com/sundials-codes/mri-adaptivity-paper.git
 ```
-
 
 ### Requirements
 
@@ -27,7 +24,6 @@ To compile the codes in this repository you will need:
 
 * Python
 
-
 The codes in this repository depend on two branches of the [SUNDIALS](https://github.com/LLNL/sundials) library.  These two specific versions will be cloned from GitHub as submodules of this repository.  After cloning this repository using the command above, retrieve these submodules via:
 
 ```bash
@@ -37,7 +33,6 @@ The codes in this repository depend on two branches of the [SUNDIALS](https://gi
 ```
 
 Additionally, the Python postprocessing scripts in this repository require a number of additional packages, including [NumPy](https://numpy.org/), [Matplotlib](https://matplotlib.org/), and [Pandas](https://pandas.pydata.org/).
-
 
 ### Building the Dependencies
 
@@ -85,7 +80,6 @@ and in the future you can "reactivate" the python environment in your shell by r
 source .venv/bin/activate
 ```
 
-
 ### Building
 
 The codes that will link to each of the two above SUNDIALS installations must be configured and built in separate phases.  Like most CMake-based projects, in-source builds are not permitted, so the code should be configured and built from a separate build directory.  If the steps above were followed to build the two relevant versions of SUNDIALS, then the test codes in this repository may be built with the commands:
@@ -105,7 +99,8 @@ The codes that will link to each of the two above SUNDIALS installations must be
   make -j install
   cd ../../
 ```
-When these complete, the following executables should each be in the top-level `bin` folder:
+
+n these complete, the following executables should each be in the top-level `bin` folder:
 `ark_kpr_nestedmri`,
 `ark_test_accumerror_brusselator`,
 `ark_test_accumerror_kpr`,
