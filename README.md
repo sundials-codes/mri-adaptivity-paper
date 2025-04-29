@@ -40,18 +40,36 @@ We recommend that users follow the instructios below for installing both version
 
 #### SUNDIALS
 
-[The SUNDIALS build instructions are linked here](https://sundials.readthedocs.io/en/latest/sundials/Install_link.html#building-and-installing-with-cmake).  Note that of the many SUNDIALS build options, this repository requires only a minimal SUNDIALS build with additional logging enabled.  The following steps can be used to build SUNDIALS using this minimal configuration:
+[The SUNDIALS build instructions are linked here](https://sundials.readthedocs.io/en/latest/sundials/Install_link.html#building-and-installing-with-cmake).  Note that of the many SUNDIALS build options, this repository requires only a minimal SUNDIALS build.  The following steps can be used to build SUNDIALS using this minimal configuration:
 
 ```bash
 mkdir sundials-v7.3.0/build
 cd sundials-v7.3.0/build
-cmake -DCMAKE_INSTALL_PREFIX=../install -DSUNDIALS_LOGGING_LEVEL=4 ..
+cmake -DCMAKE_INSTALL_PREFIX=../install ..
 make -j install
 cd -
 
 mkdir sundials-mrihh/build
 cd sundials-mrihh/build
-cmake -DCMAKE_INSTALL_PREFIX=../install -DSUNDIALS_LOGGING_LEVEL=4 ..
+cmake -DCMAKE_INSTALL_PREFIX=../install ..
+make -j install
+cd -
+```
+
+Additionally, to run the tests that will automatically log all internal time steps at each time scale, allowing plots of the "adaptivity history," you should build SUNDIALS two more times with additional logging enabled:
+
+```bash
+mkdir sundials-v7.3.0/build
+cd sundials-v7.3.0/build
+cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DSUNDIALS_LOGGING_LEVEL=4 ..
+make clean
+make -j install
+cd -
+
+mkdir sundials-mrihh/build
+cd sundials-mrihh/build
+cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DSUNDIALS_LOGGING_LEVEL=4 ..
+make clean
 make -j install
 cd -
 ```
@@ -100,7 +118,7 @@ The codes that will link to each of the two above SUNDIALS installations must be
   cd ../../
 ```
 
-n these complete, the following executables should each be in the top-level `bin` folder:
+When these complete, the following executables should each be in the top-level `bin` folder:
 `ark_kpr_nestedmri`,
 `ark_test_accumerror_brusselator`,
 `ark_test_accumerror_kpr`,
@@ -110,3 +128,28 @@ n these complete, the following executables should each be in the top-level `bin
 `ark_test_kpr_mriadapt_hh`,
 `ark_test_slowerror_brusselator`, and
 `ark_test_slowerror_kpr`.
+
+To build the additional examples that enable "logging", use the commands:
+
+```bash
+  cd src-mrihh-logging
+  mkdir build
+  cd build
+  cmake ..
+  make -j install
+  cd ../../
+
+  cd src-v7.3.0-logging
+  mkdir build
+  cd build
+  cmake ..
+  make -j install
+  cd ../../
+```
+
+When these complete, the executables should each be in the top-level `bin` folder:
+`ark_kpr_nestedmri_logging`,
+`ark_test_brusselator_mriadapt_logging`,
+`ark_test_brusselator_mriadapt_hh_logging`,
+`ark_test_kpr_mriadapt_logging`, and
+`ark_test_kpr_mriadapt_hh_logging` will also be installed in the top-level `bin` folder.

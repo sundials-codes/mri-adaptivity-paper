@@ -399,7 +399,8 @@ static int adaptive_run(void* arkode_mem, N_Vector y, sunrealtype T0,
   sunrealtype t;
   sunrealtype hpart                 = (Tf - T0) / udata.Npart;
   sunrealtype abstol                = SUN_RCONST(1.e-12);
-  vector<sunrealtype> rtols         = {SUN_RCONST(1.e-2), SUN_RCONST(1.e-4),
+  vector<sunrealtype> rtols         = {SUN_RCONST(1.e-2), SUN_RCONST(1.e-3),
+                                       SUN_RCONST(1.e-4), SUN_RCONST(1.e-5),
                                        SUN_RCONST(1.e-6)};
   vector<ARKAccumError> accum_types = {ARK_ACCUMERROR_MAX, ARK_ACCUMERROR_SUM,
                                        ARK_ACCUMERROR_AVG};
@@ -486,7 +487,8 @@ static int fixed_run(void* arkode_mem, N_Vector y, sunrealtype T0, sunrealtype T
   // Set array of fixed step sizes to use, storage for corresponding errors/orders
   sunrealtype hmax = (Tf - T0) / 400;
   if (rk_type == 1) hmax = min(hmax, udata.ep);
-  vector<sunrealtype> hvals         = {hmax, hmax / 4, hmax / 16, hmax / 64};
+  vector<sunrealtype> hvals         = {hmax, hmax / 2, hmax / 4, hmax / 8,
+                                       hmax / 16, hmax / 32, hmax / 64};
   vector<ARKAccumError> accum_types = {ARK_ACCUMERROR_MAX, ARK_ACCUMERROR_SUM,
                                        ARK_ACCUMERROR_AVG};
   vector<sunrealtype> dsm(udata.Npart);
@@ -638,7 +640,7 @@ static int fixed_run(void* arkode_mem, N_Vector y, sunrealtype T0, sunrealtype T
       dsm[ipart] = reltol * sqrt((udsm * udsm + vdsm * vdsm + wdsm * wdsm) /
                                  SUN_RCONST(3.0));
       cout << "  h " << hvals[ih] << "  rk_type " << rk_type << "  order "
-           << order << "  acc " << 2 << "  t " << t << "  dsm " << dsm[ipart]
+           << order << "  acc " << 4 << "  t " << t << "  dsm " << dsm[ipart]
            << "  dsm_est " << dsm_est[ipart] << "  nsteps " << Nsteps[ipart]
            << endl;
     }
