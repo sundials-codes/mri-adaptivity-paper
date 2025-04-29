@@ -29,11 +29,8 @@ method = 1
 # orders of accuracy to test (positive are adaptive, negative are fixed-step)
 Orders = [2, 3, 4, 5, 6, -2, -3, -4, -5, -6]
 
-# open results file
+# open results file, and run each test (appending results to fname)
 with open(fname, "w") as outfile:
-    subprocess.run(["ls"], stdout=outfile)
-
-    # run each test, appending results to fname
     for ord in Orders:
         runcommand = "%s %i %i %i %e %i" % (executable, Npart, ord, method, ep, test)
         subprocess.run(shlex.split(runcommand), stdout=outfile)
@@ -58,11 +55,8 @@ omega = 5.0
 # orders of accuracy to test (positive are adaptive, negative are fixed-step)
 Orders = [2, 3, 4, 5, 6, -2, -3, -4, -5, -6]
 
-# open results file
+# open results file, and run each test (appending results to fname)
 with open(fname, "w") as outfile:
-    subprocess.run(["ls"], stdout=outfile)
-
-    # run each test, appending results to fname
     for ord in Orders:
         runcommand = "%s %i %i %i %e %e %e" % (executable, Npart, ord, method, G, e, omega)
         subprocess.run(shlex.split(runcommand), stdout=outfile)
