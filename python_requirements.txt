@@ -13,3 +13,4 @@ pytz==2024.2
 six==1.16.0
 tzdata==2024.2
 scipy==1.15.2
+openpyxl==3.1.5
