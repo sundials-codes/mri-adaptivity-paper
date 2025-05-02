@@ -87,25 +87,22 @@
  * - "slow" and "intermediate" MRI temporal adaptivity controllers: scontrol [default = 1]
  *      0:  no controller [fixed time steps]
  *      1:  I controller (as part of MRI-HTOL)
- *      2:  PI controller (as part of MRI-HTOL)
- *      3:  PID controller (as part of MRI-HTOL)
- *      4:  ExpGus controller (as part of MRI-HTOL)
- *      5:  ImpGus controller (as part of MRI-HTOL)
- *      6:  ImExGus controller (as part of MRI-HTOL)
+ *      2:  H0211 controller (as part of MRI-HTOL)
+ *      3:  H0321 controller (as part of MRI-HTOL)
+ *      4:  H211 controller (as part of MRI-HTOL)
+ *      5:  H312 controller (as part of MRI-HTOL)
  *      7:  I controller (alone)
- *      8:  PI controller (alone)
- *      9:  PID controller (alone)
- *      10: ExpGus controller (alone)
- *      11: ImpGus controller (alone)
- *      12: ImExGus controller (alone)
- * - "fast" ERKStep temporal adaptivity controller: fcontrol [default = 1]
+ *      8:  H0211 controller (alone)
+ *      9:  H0321 controller (alone)
+ *      10: H211 controller (alone)
+ *      11: H312 controller (alone)
+  * - "fast" ERKStep temporal adaptivity controller: fcontrol [default = 1]
  *      0:  no controller [fixed time steps]
  *      1:  I controller
- *      2:  PI controller
- *      3:  PID controller
- *      4:  ExpGus controller
- *      5:  ImpGus controller
- *      6:  ImExGus controller
+ *      2:  H0211 controller
+ *      3:  H0321 controller
+ *      4:  H211 controller
+ *      5:  H312 controller
  * - "intermediate" and "fast" accumulated error type: faccum [default = 0]
  *     -1:  no accumulation
  *      0:  maximum accumulation
@@ -133,7 +130,6 @@
 #include <iomanip>
 #include <iostream>
 #include <nvector/nvector_serial.h> // serial N_Vector type, fcts., macros
-#include <sunadaptcontroller/sunadaptcontroller_imexgus.h>
 #include <sunadaptcontroller/sunadaptcontroller_mrihtol.h>
 #include <sunadaptcontroller/sunadaptcontroller_soderlind.h>
 #include <sundials/sundials_core.hpp>
@@ -362,45 +358,20 @@ int main(int argc, char* argv[])
     }
     break;
   case (2):
-    fcontrol = SUNAdaptController_PI(sunctx);
-    if (check_ptr((void*)fcontrol, "SUNAdaptController_PI")) return 1;
-    if (!(std::isnan(opts.k1f) || std::isnan(opts.k2f)))
-    {
-      retval = SUNAdaptController_SetParams_PI(fcontrol, opts.k1f, opts.k2f);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PI")) return 1;
-    }
+    fcontrol = SUNAdaptController_H0211(sunctx);
+    if (check_ptr((void*)fcontrol, "SUNAdaptController_H0211")) return 1;
     break;
   case (3):
-    fcontrol = SUNAdaptController_PID(sunctx);
-    if (check_ptr((void*)fcontrol, "SUNAdaptController_PID")) return 1;
-    if (!(std::isnan(opts.k1f) || std::isnan(opts.k2f) || std::isnan(opts.k3f)))
-    {
-      retval = SUNAdaptController_SetParams_PID(fcontrol, opts.k1f, opts.k2f,
-                                                opts.k3f);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PID")) return 1;
-    }
+    fcontrol = SUNAdaptController_H0321(sunctx);
+    if (check_ptr((void*)fcontrol, "SUNAdaptController_H0321")) return 1;
     break;
   case (4):
-    fcontrol = SUNAdaptController_ExpGus(sunctx);
-    if (check_ptr((void*)fcontrol, "SUNAdaptController_ExpGus")) return 1;
-    if (!(std::isnan(opts.k1f) || std::isnan(opts.k2f)))
-    {
-      retval = SUNAdaptController_SetParams_ExpGus(fcontrol, opts.k1f, opts.k2f);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ExpGus")) return 1;
-    }
+    fcontrol = SUNAdaptController_H211(sunctx);
+    if (check_ptr((void*)fcontrol, "SUNAdaptController_H211")) return 1;
     break;
   case (5):
-    fcontrol = SUNAdaptController_ImpGus(sunctx);
-    if (check_ptr((void*)fcontrol, "SUNAdaptController_ImpGus")) return 1;
-    if (!(std::isnan(opts.k1f) || std::isnan(opts.k2f)))
-    {
-      retval = SUNAdaptController_SetParams_ImpGus(fcontrol, opts.k1f, opts.k2f);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ImpGus")) return 1;
-    }
-    break;
-  case (6):
-    fcontrol = SUNAdaptController_ImExGus(sunctx);
-    if (check_ptr((void*)fcontrol, "SUNAdaptController_ImExGus")) return 1;
+    fcontrol = SUNAdaptController_H312(sunctx);
+    if (check_ptr((void*)fcontrol, "SUNAdaptController_H312")) return 1;
     break;
   }
   if (!std::isnan(opts.bias) && (opts.fcontrol > 0))
@@ -504,28 +475,17 @@ int main(int argc, char* argv[])
   }
   case (2):
   {
-    scontrol_H = SUNAdaptController_PI(sunctx);
-    if (check_ptr((void*)scontrol_H, "SUNAdaptController_PI (slow H)"))
+    scontrol_H = SUNAdaptController_H0211(sunctx);
+    if (check_ptr((void*)scontrol_H, "SUNAdaptController_H0211 (slow H)"))
       return 1;
-    scontrol_Tol = SUNAdaptController_PI(sunctx);
-    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_PI (slow Tol)"))
+    scontrol_Tol = SUNAdaptController_H0211(sunctx);
+    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_H0211 (slow Tol)"))
       return 1;
-    mcontrol_H = SUNAdaptController_PI(sunctx);
-    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_PI (mid H)")) return 1;
-    mcontrol_Tol = SUNAdaptController_PI(sunctx);
-    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_PI (mid Tol)"))
+    mcontrol_H = SUNAdaptController_H0211(sunctx);
+    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_H0211 (mid H)")) return 1;
+    mcontrol_Tol = SUNAdaptController_H0211(sunctx);
+    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_H0211 (mid Tol)"))
       return 1;
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      retval = SUNAdaptController_SetParams_PI(scontrol_H, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PI")) return 1;
-      retval = SUNAdaptController_SetParams_PI(scontrol_Tol, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PI")) return 1;
-      retval = SUNAdaptController_SetParams_PI(mcontrol_H, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PI")) return 1;
-      retval = SUNAdaptController_SetParams_PI(mcontrol_Tol, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PI")) return 1;
-    }
     scontrol = SUNAdaptController_MRIHTol(scontrol_H, scontrol_Tol, sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptController_MRIHTol")) return 1;
     mcontrol = SUNAdaptController_MRIHTol(mcontrol_H, mcontrol_Tol, sunctx);
@@ -546,33 +506,18 @@ int main(int argc, char* argv[])
   }
   case (3):
   {
-    scontrol_H = SUNAdaptController_PID(sunctx);
-    if (check_ptr((void*)scontrol_H, "SUNAdaptController_PID (slow H)"))
+    scontrol_H = SUNAdaptController_H0321(sunctx);
+    if (check_ptr((void*)scontrol_H, "SUNAdaptController_H0321 (slow H)"))
       return 1;
-    scontrol_Tol = SUNAdaptController_PID(sunctx);
-    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_PID (slow Tol)"))
+    scontrol_Tol = SUNAdaptController_H0321(sunctx);
+    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_H0321 (slow Tol)"))
       return 1;
-    mcontrol_H = SUNAdaptController_PID(sunctx);
-    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_PID (mid H)"))
+    mcontrol_H = SUNAdaptController_H0321(sunctx);
+    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_H0321 (mid H)"))
       return 1;
-    mcontrol_Tol = SUNAdaptController_PID(sunctx);
-    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_PID (mid Tol)"))
+    mcontrol_Tol = SUNAdaptController_H0321(sunctx);
+    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_H0321 (mid Tol)"))
       return 1;
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s) || std::isnan(opts.k3s)))
-    {
-      retval = SUNAdaptController_SetParams_PID(scontrol_H, opts.k1s, opts.k2s,
-                                                opts.k3s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PID")) return 1;
-      retval = SUNAdaptController_SetParams_PID(scontrol_Tol, opts.k1s,
-                                                opts.k2s, opts.k3s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PID")) return 1;
-      retval = SUNAdaptController_SetParams_PID(mcontrol_H, opts.k1s, opts.k2s,
-                                                opts.k3s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PID")) return 1;
-      retval = SUNAdaptController_SetParams_PID(mcontrol_Tol, opts.k1s,
-                                                opts.k2s, opts.k3s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PID")) return 1;
-    }
     scontrol = SUNAdaptController_MRIHTol(scontrol_H, scontrol_Tol, sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptController_MRIHTol")) return 1;
     mcontrol = SUNAdaptController_MRIHTol(mcontrol_H, mcontrol_Tol, sunctx);
@@ -593,33 +538,18 @@ int main(int argc, char* argv[])
   }
   case (4):
   {
-    scontrol_H = SUNAdaptController_ExpGus(sunctx);
-    if (check_ptr((void*)scontrol_H, "SUNAdaptController_ExpGus (slow H)"))
+    scontrol_H = SUNAdaptController_H211(sunctx);
+    if (check_ptr((void*)scontrol_H, "SUNAdaptController_H211 (slow H)"))
       return 1;
-    scontrol_Tol = SUNAdaptController_ExpGus(sunctx);
-    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_ExpGus (slow Tol)"))
+    scontrol_Tol = SUNAdaptController_H211(sunctx);
+    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_H211 (slow Tol)"))
       return 1;
-    mcontrol_H = SUNAdaptController_ExpGus(sunctx);
-    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_ExpGus (mid H)"))
+    mcontrol_H = SUNAdaptController_H211(sunctx);
+    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_H211 (mid H)"))
       return 1;
-    mcontrol_Tol = SUNAdaptController_ExpGus(sunctx);
-    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_ExpGus (mid Tol)"))
+    mcontrol_Tol = SUNAdaptController_H211(sunctx);
+    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_H211 (mid Tol)"))
       return 1;
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      retval = SUNAdaptController_SetParams_ExpGus(scontrol_H, opts.k1s,
-                                                   opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ExpGus")) return 1;
-      retval = SUNAdaptController_SetParams_ExpGus(scontrol_Tol, opts.k1s,
-                                                   opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ExpGus")) return 1;
-      retval = SUNAdaptController_SetParams_ExpGus(mcontrol_H, opts.k1s,
-                                                   opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ExpGus")) return 1;
-      retval = SUNAdaptController_SetParams_ExpGus(mcontrol_Tol, opts.k1s,
-                                                   opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ExpGus")) return 1;
-    }
     scontrol = SUNAdaptController_MRIHTol(scontrol_H, scontrol_Tol, sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptController_MRIHTol")) return 1;
     mcontrol = SUNAdaptController_MRIHTol(mcontrol_H, mcontrol_Tol, sunctx);
@@ -640,68 +570,21 @@ int main(int argc, char* argv[])
   }
   case (5):
   {
-    scontrol_H = SUNAdaptController_ImpGus(sunctx);
-    if (check_ptr((void*)scontrol_H, "SUNAdaptController_ImpGus (slow H)"))
+    scontrol_H = SUNAdaptController_H312(sunctx);
+    if (check_ptr((void*)scontrol_H, "SUNAdaptController_H312 (slow H)"))
       return 1;
-    scontrol_Tol = SUNAdaptController_ImpGus(sunctx);
-    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_ImpGus (slow Tol)"))
+    scontrol_Tol = SUNAdaptController_H312(sunctx);
+    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_H312 (slow Tol)"))
       return 1;
-    mcontrol_H = SUNAdaptController_ImpGus(sunctx);
-    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_ImpGus (mid H)"))
+    mcontrol_H = SUNAdaptController_H312(sunctx);
+    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_H312 (mid H)"))
       return 1;
-    mcontrol_Tol = SUNAdaptController_ImpGus(sunctx);
-    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_ImpGus (mid Tol)"))
+    mcontrol_Tol = SUNAdaptController_H312(sunctx);
+    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_H312 (mid Tol)"))
       return 1;
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      retval = SUNAdaptController_SetParams_ImpGus(scontrol_H, opts.k1s,
-                                                   opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ImpGus")) return 1;
-      retval = SUNAdaptController_SetParams_ImpGus(scontrol_Tol, opts.k1s,
-                                                   opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ImpGus")) return 1;
-      retval = SUNAdaptController_SetParams_ImpGus(mcontrol_H, opts.k1s,
-                                                   opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ImpGus")) return 1;
-      retval = SUNAdaptController_SetParams_ImpGus(mcontrol_Tol, opts.k1s,
-                                                   opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ImpGus")) return 1;
-    }
     scontrol = SUNAdaptController_MRIHTol(scontrol_H, scontrol_Tol, sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptController_MRIHTol")) return 1;
     mcontrol = SUNAdaptController_MRIHTol(mcontrol_H, mcontrol_Tol, sunctx);
-    if (check_ptr((void*)mcontrol, "SUNAdaptController_MRIHTol")) return 1;
-    if (!(std::isnan(opts.htol_relch) || std::isnan(opts.htol_minfac) ||
-          std::isnan(opts.htol_maxfac)))
-    {
-      retval = SUNAdaptController_SetParams_MRIHTol(scontrol, opts.htol_relch,
-                                                    opts.htol_minfac,
-                                                    opts.htol_maxfac);
-      if (check_flag(retval, "SUNAdaptController_SetParams_MRIHTol")) return 1;
-      retval = SUNAdaptController_SetParams_MRIHTol(mcontrol, opts.htol_relch,
-                                                    opts.htol_minfac,
-                                                    opts.htol_maxfac);
-      if (check_flag(retval, "SUNAdaptController_SetParams_MRIHTol")) return 1;
-    }
-    break;
-  }
-  case (6):
-  {
-    scontrol_H = SUNAdaptController_ImExGus(sunctx);
-    if (check_ptr((void*)scontrol_H, "SUNAdaptController_ImExGus (slow H)"))
-      return 1;
-    scontrol_Tol = SUNAdaptController_ImExGus(sunctx);
-    if (check_ptr((void*)scontrol_Tol, "SUNAdaptController_ImExGus (slow Tol)"))
-      return 1;
-    mcontrol_H = SUNAdaptController_ImExGus(sunctx);
-    if (check_ptr((void*)mcontrol_H, "SUNAdaptController_ImExGus (mid H)"))
-      return 1;
-    mcontrol_Tol = SUNAdaptController_ImExGus(sunctx);
-    if (check_ptr((void*)mcontrol_Tol, "SUNAdaptController_ImExGus (mid Tol)"))
-      return 1;
-    scontrol = SUNAdaptController_MRIHTol(scontrol_H, scontrol_Tol, sunctx);
-    if (check_ptr((void*)scontrol, "SUNAdaptController_MRIHTol")) return 1;
-    mcontrol = SUNAdaptController_MRIHTol(scontrol_H, scontrol_Tol, sunctx);
     if (check_ptr((void*)mcontrol, "SUNAdaptController_MRIHTol")) return 1;
     if (!(std::isnan(opts.htol_relch) || std::isnan(opts.htol_minfac) ||
           std::isnan(opts.htol_maxfac)))
@@ -734,76 +617,36 @@ int main(int argc, char* argv[])
   }
   case (8):
   {
-    scontrol = SUNAdaptController_PI(sunctx);
-    if (check_ptr((void*)scontrol, "SUNAdaptController_PI (slow)")) return 1;
-    mcontrol = SUNAdaptController_PI(sunctx);
-    if (check_ptr((void*)mcontrol, "SUNAdaptController_PI (mid)")) return 1;
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      retval = SUNAdaptController_SetParams_PI(scontrol, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PI")) return 1;
-      retval = SUNAdaptController_SetParams_PI(mcontrol, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PI")) return 1;
-    }
+    scontrol = SUNAdaptController_H0211(sunctx);
+    if (check_ptr((void*)scontrol, "SUNAdaptController_H0211 (slow)")) return 1;
+    mcontrol = SUNAdaptController_H0211(sunctx);
+    if (check_ptr((void*)mcontrol, "SUNAdaptController_H0211 (mid)")) return 1;
     break;
   }
   case (9):
   {
-    scontrol = SUNAdaptController_PID(sunctx);
-    if (check_ptr((void*)scontrol, "SUNAdaptController_PID (slow)")) return 1;
-    mcontrol = SUNAdaptController_PID(sunctx);
-    if (check_ptr((void*)mcontrol, "SUNAdaptController_PID (mid)")) return 1;
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s) || std::isnan(opts.k3s)))
-    {
-      retval = SUNAdaptController_SetParams_PID(scontrol, opts.k1s, opts.k2s,
-                                                opts.k3s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PID")) return 1;
-      retval = SUNAdaptController_SetParams_PID(mcontrol, opts.k1s, opts.k2s,
-                                                opts.k3s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_PID")) return 1;
-    }
+    scontrol = SUNAdaptController_H0321(sunctx);
+    if (check_ptr((void*)scontrol, "SUNAdaptController_H0321 (slow)")) return 1;
+    mcontrol = SUNAdaptController_H0321(sunctx);
+    if (check_ptr((void*)mcontrol, "SUNAdaptController_H0321 (mid)")) return 1;
     break;
   }
   case (10):
   {
-    scontrol = SUNAdaptController_ExpGus(sunctx);
-    if (check_ptr((void*)scontrol, "SUNAdaptController_ExpGus (slow)"))
+    scontrol = SUNAdaptController_H211(sunctx);
+    if (check_ptr((void*)scontrol, "SUNAdaptController_H211 (slow)"))
       return 1;
-    mcontrol = SUNAdaptController_ExpGus(sunctx);
-    if (check_ptr((void*)mcontrol, "SUNAdaptController_ExpGus (mid)")) return 1;
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      retval = SUNAdaptController_SetParams_ExpGus(scontrol, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ExpGus")) return 1;
-      retval = SUNAdaptController_SetParams_ExpGus(mcontrol, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ExpGus")) return 1;
-    }
+    mcontrol = SUNAdaptController_H211(sunctx);
+    if (check_ptr((void*)mcontrol, "SUNAdaptController_H211 (mid)")) return 1;
     break;
   }
   case (11):
   {
-    scontrol = SUNAdaptController_ImpGus(sunctx);
-    if (check_ptr((void*)scontrol, "SUNAdaptController_ImpGus (slow)"))
+    scontrol = SUNAdaptController_H312(sunctx);
+    if (check_ptr((void*)scontrol, "SUNAdaptController_H312 (slow)"))
       return 1;
-    mcontrol = SUNAdaptController_ImpGus(sunctx);
-    if (check_ptr((void*)mcontrol, "SUNAdaptController_ImpGus (mid)")) return 1;
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      retval = SUNAdaptController_SetParams_ImpGus(scontrol, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ImpGus")) return 1;
-      retval = SUNAdaptController_SetParams_ImpGus(mcontrol, opts.k1s, opts.k2s);
-      if (check_flag(retval, "SUNAdaptController_SetParams_ImpGus")) return 1;
-    }
-    break;
-  }
-  case (12):
-  {
-    scontrol = SUNAdaptController_ImExGus(sunctx);
-    if (check_ptr((void*)scontrol, "SUNAdaptController_ImExGus (slow)"))
-      return 1;
-    mcontrol = SUNAdaptController_ImExGus(sunctx);
-    if (check_ptr((void*)scontrol, "SUNAdaptController_ImExGus (mid)"))
-      return 1;
+    mcontrol = SUNAdaptController_H312(sunctx);
+    if (check_ptr((void*)mcontrol, "SUNAdaptController_H312 (mid)")) return 1;
     break;
   }
   }
@@ -1749,7 +1592,7 @@ static void PrintSlowAdaptivity(Options opts)
   case (2):
   {
     std::cout
-      << "    MRI-HTOL controller (using PI for H) based on order of MRI "
+      << "    MRI-HTOL controller (using H0211 for H) based on order of MRI "
       << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
@@ -1769,67 +1612,25 @@ static void PrintSlowAdaptivity(Options opts)
   case (3):
   {
     std::cout
-      << "    MRI-HTOL controller (using PID for H) based on order of MRI "
+      << "    MRI-HTOL controller (using H0321 for H) based on order of MRI "
       << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s) || std::isnan(opts.k3s)))
-    {
-      std::cout << "    slow/intermediate controller parameters: " << opts.k1s
-                << " " << opts.k2s << " " << opts.k3s << "\n";
-    }
-    if (!(std::isnan(opts.htol_relch) || std::isnan(opts.htol_minfac) ||
-          std::isnan(opts.htol_maxfac)))
-    {
-      std::cout << "    HTol controller parameters: " << opts.htol_relch << " "
-                << opts.htol_minfac << " " << opts.htol_maxfac << "\n";
-    }
     break;
   }
   case (4):
   {
     std::cout
-      << "    MRI-HTOL controller (using ExpGus for H) based on order of MRI "
+      << "    MRI-HTOL controller (using H211 for H) based on order of MRI "
       << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      std::cout << "    slow/intermediate controller parameters: " << opts.k1s
-                << " " << opts.k2s << "\n";
-    }
-    if (!(std::isnan(opts.htol_relch) || std::isnan(opts.htol_minfac) ||
-          std::isnan(opts.htol_maxfac)))
-    {
-      std::cout << "    HTol controller parameters: " << opts.htol_relch << " "
-                << opts.htol_minfac << " " << opts.htol_maxfac << "\n";
-    }
     break;
   }
   case (5):
   {
     std::cout
-      << "    MRI-HTOL controller (using ImpGus for H) based on order of MRI "
-      << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
-    std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      std::cout << "    slow/intermediate controller parameters: " << opts.k1s
-                << " " << opts.k2s << "\n";
-    }
-    if (!(std::isnan(opts.htol_relch) || std::isnan(opts.htol_minfac) ||
-          std::isnan(opts.htol_maxfac)))
-    {
-      std::cout << "    HTol controller parameters: " << opts.htol_relch << " "
-                << opts.htol_minfac << " " << opts.htol_maxfac << "\n";
-    }
-    break;
-  }
-  case (6):
-  {
-    std::cout
-      << "    MRI-HTOL controller (using ImExGus for H) based on order of MRI "
+      << "    MRI-HTOL controller (using H312 for H) based on order of MRI "
       << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
@@ -1850,59 +1651,31 @@ static void PrintSlowAdaptivity(Options opts)
   }
   case (8):
   {
-    std::cout << "    Decoupled PI controller for slow time scale, based on "
+    std::cout << "    Decoupled H0211 controller for slow time scale, based on "
                  "order of MRI "
               << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      std::cout << "    slow/intermediate controller parameters: " << opts.k1s
-                << " " << opts.k2s << "\n";
-    }
     break;
   }
   case (9):
   {
-    std::cout << "    Decoupled PID controller for slow time scale, based on "
+    std::cout << "    Decoupled H0321 controller for slow time scale, based on "
                  "order of MRI "
               << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s) || std::isnan(opts.k3s)))
-    {
-      std::cout << "    slow/intermediate controller parameters: " << opts.k1s
-                << " " << opts.k2s << " " << opts.k3s << "\n";
-    }
     break;
   }
   case (10):
   {
-    std::cout << "    Decoupled ExpGus controller for slow time scale, based "
+    std::cout << "    Decoupled H211 controller for slow time scale, based "
                  "on order of MRI "
               << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      std::cout << "    slow/intermediate controller parameters: " << opts.k1s
-                << " " << opts.k2s << "\n";
-    }
     break;
   }
   case (11):
   {
-    std::cout << "    Decoupled ImpGus controller for slow time scale, based "
-                 "on order of MRI "
-              << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
-    std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    if (!(std::isnan(opts.k1s) || std::isnan(opts.k2s)))
-    {
-      std::cout << "    slow/intermediate controller parameters: " << opts.k1s
-                << " " << opts.k2s << "\n";
-    }
-    break;
-  }
-  case (12):
-  {
-    std::cout << "    Decoupled ImExGus controller for slow time scale, based "
+    std::cout << "    Decoupled H312 controller for slow time scale, based "
                  "on order of MRI "
               << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
@@ -1944,62 +1717,33 @@ static void PrintFastAdaptivity(Options opts)
   }
   case (2):
   {
-    std::cout << "    PI controller for fast time scale, based on order of RK "
+    std::cout << "    H0211 controller for fast time scale, based on order of RK "
               << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    fast_rtol = " << opts.fast_rtol
               << ", atol = " << opts.atol << "\n";
-    if (!(std::isnan(opts.k1f) || std::isnan(opts.k2f)))
-    {
-      std::cout << "    fast controller parameters: " << opts.k1f << " "
-                << opts.k2f << "\n";
-    }
     break;
   }
   case (3):
   {
-    std::cout << "    PID controller for fast time scale, based on order of RK "
+    std::cout << "    H0321 controller for fast time scale, based on order of RK "
               << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    fast_rtol = " << opts.fast_rtol
               << ", atol = " << opts.atol << "\n";
-    if (!(std::isnan(opts.k1f) || std::isnan(opts.k2f) || std::isnan(opts.k3f)))
-    {
-      std::cout << "    fast controller parameters: " << opts.k1f << " "
-                << opts.k2f << " " << opts.k3f << "\n";
-    }
     break;
   }
   case (4):
   {
     std::cout
-      << "    ExpGus controller for fast time scale, based on order of RK "
+      << "    H211 controller for fast time scale, based on order of RK "
       << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    fast_rtol = " << opts.fast_rtol
               << ", atol = " << opts.atol << "\n";
-    if (!(std::isnan(opts.k1f) || std::isnan(opts.k2f)))
-    {
-      std::cout << "    fast controller parameters: " << opts.k1f << " "
-                << opts.k2f << "\n";
-    }
     break;
   }
   case (5):
   {
     std::cout
-      << "    ImpGus controller for fast time scale, based on order of RK "
-      << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
-    std::cout << "    fast_rtol = " << opts.fast_rtol
-              << ", atol = " << opts.atol << "\n";
-    if (!(std::isnan(opts.k1f) || std::isnan(opts.k2f)))
-    {
-      std::cout << "    fast controller parameters: " << opts.k1f << " "
-                << opts.k2f << "\n";
-    }
-    break;
-  }
-  case (6):
-  {
-    std::cout
-      << "    ImExGus controller for fast time scale, based on order of RK "
+      << "    H312 controller for fast time scale, based on order of RK "
       << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    fast_rtol = " << opts.fast_rtol
               << ", atol = " << opts.atol << "\n";
