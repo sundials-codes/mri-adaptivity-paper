@@ -52,7 +52,7 @@ def controller(method):
 
 # utility routine to run a single KPR test, storing the run options and solver statistics
 def runtest_kpr(exe, e, omega, atol, rtol, mri, order, control, showcommand=False):
-    stats = {'e': e, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 0, 'SlowSteps': 0, 'SlowFails': 0, 'FastSteps': 0, 'FastFails': 0, 'Accuracy': 0.0, 'FfEvals': 0, 'FseEvals': 0, 'FsiEvals': 0}
+    stats = {'e': e, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'SlowSteps': 1e10, 'SlowFails': 1e10, 'FastSteps': 1e10, 'FastFails': 1e10, 'Accuracy': 1e10, 'FfEvals': 1e10, 'FseEvals': 1e10, 'FsiEvals': 1e10}
     runcommand = "%s --e %e --w %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, e, omega, atol, rtol, rtol, mri, order) + controller(control)
     result = subprocess.run(shlex.split(runcommand), stdout=subprocess.PIPE)
     stats['ReturnCode'] = result.returncode
@@ -81,7 +81,7 @@ def runtest_kpr(exe, e, omega, atol, rtol, mri, order, control, showcommand=Fals
 
 # utility routine to run a single Brusselator test, storing the run options and solver statistics
 def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=False):
-    stats = {'ep': ep, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 0, 'SlowSteps': 0, 'SlowFails': 0, 'FastSteps': 0, 'FastFails': 0, 'Accuracy': 0.0, 'FfEvals': 0, 'FseEvals': 0, 'FsiEvals': 0}
+    stats = {'ep': ep, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'SlowSteps': 1e10, 'SlowFails': 1e10, 'FastSteps': 1e10, 'FastFails': 1e10, 'Accuracy': 1e10, 'FfEvals': 1e10, 'FseEvals': 1e10, 'FsiEvals': 1e10}
     runcommand = "%s --ep %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, ep, atol, rtol, rtol, mri, order) + controller(control)
     result = subprocess.run(shlex.split(runcommand), stdout=subprocess.PIPE)
     stats['ReturnCode'] = result.returncode
