@@ -91,11 +91,11 @@
  *      3:  H0321 controller (as part of MRI-HTOL)
  *      4:  H211 controller (as part of MRI-HTOL)
  *      5:  H312 controller (as part of MRI-HTOL)
- *      7:  I controller (alone)
- *      8:  H0211 controller (alone)
- *      9:  H0321 controller (alone)
- *      10: H211 controller (alone)
- *      11: H312 controller (alone)
+ *      6:  I controller (alone)
+ *      7:  H0211 controller (alone)
+ *      8:  H0321 controller (alone)
+ *      9:  H211 controller (alone)
+ *      10: H312 controller (alone)
   * - "fast" ERKStep temporal adaptivity controller: fcontrol [default = 1]
  *      0:  no controller [fixed time steps]
  *      1:  I controller
@@ -600,7 +600,7 @@ int main(int argc, char* argv[])
     }
     break;
   }
-  case (7):
+  case (6):
   {
     scontrol = SUNAdaptController_I(sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptControllerI (slow)")) return 1;
@@ -615,7 +615,7 @@ int main(int argc, char* argv[])
     }
     break;
   }
-  case (8):
+  case (7):
   {
     scontrol = SUNAdaptController_H0211(sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptController_H0211 (slow)")) return 1;
@@ -623,7 +623,7 @@ int main(int argc, char* argv[])
     if (check_ptr((void*)mcontrol, "SUNAdaptController_H0211 (mid)")) return 1;
     break;
   }
-  case (9):
+  case (8):
   {
     scontrol = SUNAdaptController_H0321(sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptController_H0321 (slow)")) return 1;
@@ -631,7 +631,7 @@ int main(int argc, char* argv[])
     if (check_ptr((void*)mcontrol, "SUNAdaptController_H0321 (mid)")) return 1;
     break;
   }
-  case (10):
+  case (9):
   {
     scontrol = SUNAdaptController_H211(sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptController_H211 (slow)"))
@@ -640,7 +640,7 @@ int main(int argc, char* argv[])
     if (check_ptr((void*)mcontrol, "SUNAdaptController_H211 (mid)")) return 1;
     break;
   }
-  case (11):
+  case (10):
   {
     scontrol = SUNAdaptController_H312(sunctx);
     if (check_ptr((void*)scontrol, "SUNAdaptController_H312 (slow)"))
@@ -1636,7 +1636,7 @@ static void PrintSlowAdaptivity(Options opts)
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
     break;
   }
-  case (7):
+  case (6):
   {
     std::cout << "    Decoupled I controller for slow time scale, based on "
                  "order of MRI "
@@ -1649,7 +1649,7 @@ static void PrintSlowAdaptivity(Options opts)
     }
     break;
   }
-  case (8):
+  case (7):
   {
     std::cout << "    Decoupled H0211 controller for slow time scale, based on "
                  "order of MRI "
@@ -1657,7 +1657,7 @@ static void PrintSlowAdaptivity(Options opts)
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     break;
   }
-  case (9):
+  case (8):
   {
     std::cout << "    Decoupled H0321 controller for slow time scale, based on "
                  "order of MRI "
@@ -1665,7 +1665,7 @@ static void PrintSlowAdaptivity(Options opts)
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     break;
   }
-  case (10):
+  case (9):
   {
     std::cout << "    Decoupled H211 controller for slow time scale, based "
                  "on order of MRI "
@@ -1673,7 +1673,7 @@ static void PrintSlowAdaptivity(Options opts)
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     break;
   }
-  case (11):
+  case (10):
   {
     std::cout << "    Decoupled H312 controller for slow time scale, based "
                  "on order of MRI "
