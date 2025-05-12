@@ -85,8 +85,8 @@ DoKPR = True
 DoBrusselator = True
 
 # Lists of MRI methods/orders, controllers, and tolerances to test
-method = ["ARKODE_MRI_GARK_ERK33a", 3]
-Controls = ['MRIDec-H211', 'MRIHTol-H211']
+method = ["ARKODE_MRI_GARK_ERK22b", 2]
+Controls = ['MRIDec-I', 'MRIHTol-H211']
 RTols = [1.e-3, 1.e-4, 1.e-5, 1.e-6, 1.e-7]
 atol = 1.e-11
 

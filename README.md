@@ -45,13 +45,13 @@ We recommend that users follow the instructios below for installing both version
 ```bash
 mkdir sundials-v7.3.0/build
 cd sundials-v7.3.0/build
-cmake -DCMAKE_INSTALL_PREFIX=../install ..
+cmake -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Release ..
 make -j install
 cd -
 
 mkdir sundials-mrihh/build
 cd sundials-mrihh/build
-cmake -DCMAKE_INSTALL_PREFIX=../install ..
+cmake -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Release ..
 make -j install
 cd -
 ```
@@ -61,14 +61,14 @@ Additionally, to run the tests that will automatically log all internal time ste
 ```bash
 mkdir sundials-v7.3.0/build
 cd sundials-v7.3.0/build
-cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DSUNDIALS_LOGGING_LEVEL=4 ..
+cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
 make clean
 make -j install
 cd -
 
 mkdir sundials-mrihh/build
 cd sundials-mrihh/build
-cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DSUNDIALS_LOGGING_LEVEL=4 ..
+cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
 make clean
 make -j install
 cd -
@@ -153,3 +153,53 @@ When these complete, the executables should each be in the top-level `bin` folde
 `ark_test_brusselator_mriadapt_hh_logging`,
 `ark_test_kpr_mriadapt_logging`, and
 `ark_test_kpr_mriadapt_hh_logging` will also be installed in the top-level `bin` folder.
+
+## Running tests
+
+All tests and plotting utilities are organized into Python scripts.
+
+### Slow error tests
+
+To run the tests that assess the quality of the MRI method embeddings:
+
+```bash
+  ./run_slowerror_tests.py
+```
+or
+```bash
+  python3 run_slowerror_tests.py
+```
+
+To generate the corresponding plots once these tests complete:
+
+### Accumulated error tests
+
+To run the tests that assess the approaches for accumulating local errors in the inner solver to predict their effect on slow error:
+
+```bash
+  ./run_accumerror_tests.py
+```
+
+To generate the corresponding plots once these tests complete:
+
+### MRI adaptivity tests
+
+To run the tests that assess the quality of various combinations of embedded MRI methods and MRI adaptivity controllers:
+
+```bash
+  ./run_mriadapt_tests.py
+```
+
+Note that some of these combinations will fail (particularly for the stiff Brusselator problem), causing error messages to print to the screen.
+
+To generate the corresponding plots once these tests complete:
+
+### Nested MRI tests
+
+To run the tests that demonstrate MRI adaptivity within a nested multirate test problem:
+
+```bash
+  ./run_nested_kpr_tests.py
+```
+
+To generate the corresponding plots once these tests complete:
