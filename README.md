@@ -24,6 +24,37 @@ To compile the codes in this repository you will need:
 
 * Python
 
+### Building all dependencies and test codes
+
+The instructions below outline a step-by-step process for building the relevant dependencies (SUNDIALS, Python modules) and test codes.  However, all necessary steps are encoded in the single `build-all.sh` script.  To run this, execute:
+
+```bash
+bash ./build-all.sh
+```
+
+This should build multiple versions of SUNDIALS and various test codes.  You may confirm that this script ran successfully by verifying that there is a new `bin` folder with the contents:
+
+```bash
+ark_kpr_nestedmri_logging
+ark_test_accumerror_brusselator
+ark_test_accumerror_kpr
+ark_test_brusselator_mriadapt
+ark_test_brusselator_mriadapt_hh
+ark_test_brusselator_mriadapt_hh_logging
+ark_test_brusselator_mriadapt_logging
+ark_test_kpr_mriadapt
+ark_test_kpr_mriadapt_hh
+ark_test_kpr_mriadapt_hh_logging
+ark_test_kpr_mriadapt_logging
+ark_test_slowerror_brusselator
+ark_test_slowerror_kpr
+```
+
+If these were built successfully, you may skip directly to the section "Running tests" below.
+
+
+### Building the Dependencies
+
 The codes in this repository depend on two branches of the [SUNDIALS](https://github.com/LLNL/sundials) library.  These two specific versions will be cloned from GitHub as submodules of this repository.  After cloning this repository using the command above, retrieve these submodules via:
 
 ```bash
@@ -33,8 +64,6 @@ The codes in this repository depend on two branches of the [SUNDIALS](https://gi
 ```
 
 Additionally, the Python postprocessing scripts in this repository require a number of additional packages, including [NumPy](https://numpy.org/), [Matplotlib](https://matplotlib.org/), and [Pandas](https://pandas.pydata.org/).
-
-### Building the Dependencies
 
 We recommend that users follow the instructios below for installing both versions of SUNDIALS.
 
@@ -59,15 +88,15 @@ cd -
 Additionally, to run the tests that will automatically log all internal time steps at each time scale, allowing plots of the "adaptivity history," you should build SUNDIALS two more times with additional logging enabled:
 
 ```bash
-mkdir sundials-v7.3.0/build
-cd sundials-v7.3.0/build
+mkdir sundials-v7.3.0/build-logging
+cd sundials-v7.3.0/build-logging
 cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
 make clean
 make -j install
 cd -
 
-mkdir sundials-mrihh/build
-cd sundials-mrihh/build
+mkdir sundials-mrihh/build-logging
+cd sundials-mrihh/build-logging
 cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
 make clean
 make -j install
@@ -98,7 +127,7 @@ and in the future you can "reactivate" the python environment in your shell by r
 source .venv/bin/activate
 ```
 
-### Building
+### Building the tests
 
 The codes that will link to each of the two above SUNDIALS installations must be configured and built in separate phases.  Like most CMake-based projects, in-source builds are not permitted, so the code should be configured and built from a separate build directory.  If the steps above were followed to build the two relevant versions of SUNDIALS, then the test codes in this repository may be built with the commands:
 
