@@ -12,9 +12,16 @@ import os
 import subprocess
 import shlex
 import sys
-import pandas as pd
+import pickle
 sys.path.append('sundials-v7.3.0/tools')
 from suntools import logs as sunlog
+
+# testing executables
+kpr_exe = './bin/ark_test_kpr_mriadapt_logging'
+kpr_hh_exe = './bin/ark_test_kpr_mriadapt_hh_logging'
+bruss_exe = './bin/ark_test_brusselator_mriadapt_logging'
+bruss_hh_exe = './bin/ark_test_brusselator_mriadapt_hh_logging'
+
 
 #####################
 # utility routines
@@ -54,12 +61,54 @@ def controller(method):
             txt = ' '
     return txt
 
+# utility routine to process a logging output file from sundials-mrihh branch to store step size and error estimates from within a multirate run
+def get_mrihh_step_histories(fname):
+    T = []
+    H = []
+    DSM = []
+    t = []
+    h = []
+    dsm = []
+    # open file and process results
+    f = open(fname)
+    separators = '[],:'
+    SSteps = 0
+    FSteps = 0
+    for line in f:
+        for sep in separators:
+            line = line.replace(sep, " ")
+        txt = line.split()
+        if (("mriStep_TakeStepMERK" in txt) and ("end-step" in txt)):
+            T.append(float(txt[11]))
+            H.append(float(txt[14]))
+            DSM.append(float(txt[17]))
+        if (("mriStep_TakeStepMRIGARK" in txt) and ("end-step" in txt)):
+            T.append(float(txt[11]))
+            H.append(float(txt[14]))
+            DSM.append(float(txt[17]))
+        if (("mriStep_TakeStepMRISR" in txt) and ("end-step" in txt)):
+            T.append(float(txt[11]))
+            H.append(float(txt[14]))
+            DSM.append(float(txt[17]))
+        if (("erkStep_TakeStep" in txt) and ("end-step" in txt)):
+            t.append(float(txt[11]))
+            h.append(float(txt[14]))
+            dsm.append(float(txt[17]))
+        if (("arkStep_TakeStep_Z" in txt) and ("end-step" in txt)):
+            t.append(float(txt[11]))
+            h.append(float(txt[14]))
+            dsm.append(float(txt[17]))
+    f.close()
+    return T, H, DSM, t, h, dsm
+
+
 # utility routine to run a kpr test, storing the run options and solver statistics
 def runtest_kpr(exe, e, omega, atol, rtol, mri, order, control, showcommand=True, removelog=False):
     stats = {'e': e, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
     runcommand = "%s --e %e --w %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, e, omega, atol, rtol, rtol, mri, order) + controller(control)
     logfile = 'kpr-log-' + control + '.txt'
     env = os.environ.copy()
+    env["SUNLOGGER_INFO_FILENAME"] = logfile
     env["SUNLOGGER_DEBUG_FILENAME"] = logfile
     result = subprocess.run(shlex.split(runcommand), stdout=subprocess.PIPE, env=env)
     stats['ReturnCode'] = result.returncode
@@ -69,12 +118,19 @@ def runtest_kpr(exe, e, omega, atol, rtol, mri, order, control, showcommand=True
     else:
         if (showcommand):
             print("Run command " + runcommand + " SUCCESS")
-        log = sunlog.log_file_to_list(logfile)
-        stepidx, times, stepsizes = sunlog.get_history(log, "h", group_by_level=True)
-        stats['T'] = times[0]
-        stats['H'] = stepsizes[0]
-        stats['t'] = times[1]
-        stats['h'] = stepsizes[1]
+        if (exe == kpr_exe):
+            log = sunlog.log_file_to_list(logfile)
+            stepidx, times, stepsizes = sunlog.get_history(log, "h", group_by_level=True)
+            stats['T'] = times[0]
+            stats['H'] = stepsizes[0]
+            stats['t'] = times[1]
+            stats['h'] = stepsizes[1]
+        else:
+            T, H, DSM, t, h, dsm = get_mrihh_step_histories(logfile)
+            stats['T'] = T
+            stats['H'] = H
+            stats['t'] = t
+            stats['h'] = h
         lines = str(result.stdout).split('\\n')
         for line in lines:
             txt = line.split()
@@ -91,6 +147,7 @@ def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=Tr
     runcommand = "%s --ep %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, ep, atol, rtol, rtol, mri, order) + controller(control)
     logfile = 'bruss-log-' + control + '.txt'
     env = os.environ.copy()
+    env["SUNLOGGER_INFO_FILENAME"] = logfile
     env["SUNLOGGER_DEBUG_FILENAME"] = logfile
     result = subprocess.run(shlex.split(runcommand), stdout=subprocess.PIPE, env=env)
     stats['ReturnCode'] = result.returncode
@@ -100,12 +157,19 @@ def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=Tr
     else:
         if (showcommand):
             print("Run command " + runcommand + " SUCCESS")
-        log = sunlog.log_file_to_list(logfile)
-        stepidx, times, stepsizes = sunlog.get_history(log, "h", group_by_level=True)
-        stats['T'] = times[0]
-        stats['H'] = stepsizes[0]
-        stats['t'] = times[1]
-        stats['h'] = stepsizes[1]
+        if (exe == bruss_exe):
+            log = sunlog.log_file_to_list(logfile)
+            stepidx, times, stepsizes = sunlog.get_history(log, "h", group_by_level=True)
+            stats['T'] = times[0]
+            stats['H'] = stepsizes[0]
+            stats['t'] = times[1]
+            stats['h'] = stepsizes[1]
+        else:
+            T, H, DSM, t, h, dsm = get_mrihh_step_histories(logfile)
+            stats['T'] = T
+            stats['H'] = H
+            stats['t'] = t
+            stats['h'] = h
         lines = str(result.stdout).split('\\n')
         for line in lines:
             txt = line.split()
@@ -119,10 +183,6 @@ def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=Tr
 
 
 # common testing parameters
-kpr_exe = './bin/ark_test_kpr_mriadapt_logging'
-kpr_hh_exe = './bin/ark_test_kpr_mriadapt_hh_logging'
-bruss_exe = './bin/ark_test_brusselator_mriadapt_logging'
-bruss_hh_exe = './bin/ark_test_brusselator_mriadapt_hh_logging'
 rtol = 1.e-5
 atol = 1.e-11
 mri_method = "ARKODE_MRI_GARK_ERK33a"
@@ -136,23 +196,15 @@ KPRStats = []
 BrussStats = []
 
 # Run both test problems using a few controllers
-KPRStats.append(runtest_kpr(kpr_exe, e, omega, atol, rtol, mri_method, fast_order, 'MRIDec-H211'))
+KPRStats.append(runtest_kpr(kpr_exe, e, omega, atol, rtol, mri_method, fast_order, 'MRIDec-H312'))
 KPRStats.append(runtest_kpr(kpr_exe, e, omega, atol, rtol, mri_method, fast_order, 'MRIHTol-H211'))
 KPRStats.append(runtest_kpr(kpr_hh_exe, e, omega, atol, rtol, mri_method, fast_order, 'MRICC'))
 
-KPRDf = pd.DataFrame.from_records(KPRStats)
-print("KPRDf object:")
-print(KPRDf)
-print("Saving as Excel")
-KPRDf.to_excel('kpr_adapt_comparison_results.xlsx', index=False)
-
-
-BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, 'MRIDec-H211'))
+BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, 'MRIDec-H312'))
 BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, 'MRIHTol-H211'))
 BrussStats.append(runtest_brusselator(bruss_hh_exe, eps, atol, rtol, mri_method, fast_order, 'MRICC'))
 
-BrussDf = pd.DataFrame.from_records(BrussStats)
-print("BrussDf object:")
-print(BrussDf)
-print("Saving as Excel")
-BrussDf.to_excel('brusselator_adapt_comparison_results.xlsx', index=False)
+with open('kpr_adapt_comparison_results.pkl', 'wb') as file:
+    pickle.dump(KPRStats, file)
+with open('brusselator_adapt_comparison_results.pkl', 'wb') as file:
+    pickle.dump(BrussStats, file)
