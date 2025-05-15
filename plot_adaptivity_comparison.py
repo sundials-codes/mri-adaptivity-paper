@@ -113,4 +113,4 @@ faststride = None
 do_test_plots('brusselator_adapt_comparison_results.pkl', 'Stiff Brusselator', 'bruss-history', slowstride, faststride)
 
 # display plots
-plt.show()
+#plt.show()
