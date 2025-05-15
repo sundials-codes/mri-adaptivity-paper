@@ -29,25 +29,25 @@ To compile the codes in this repository you will need:
 The instructions below outline a step-by-step process for building the relevant dependencies (SUNDIALS, Python modules) and test codes.  However, all necessary steps are encoded in the single `build-all.sh` script.  To run this, execute:
 
 ```bash
-bash ./build-all.sh
+  bash ./build-all.sh
 ```
 
 This should build multiple versions of SUNDIALS and various test codes.  You may confirm that this script ran successfully by verifying that there is a new `bin` folder with the contents:
 
 ```bash
-ark_kpr_nestedmri_logging
-ark_test_accumerror_brusselator
-ark_test_accumerror_kpr
-ark_test_brusselator_mriadapt
-ark_test_brusselator_mriadapt_hh
-ark_test_brusselator_mriadapt_hh_logging
-ark_test_brusselator_mriadapt_logging
-ark_test_kpr_mriadapt
-ark_test_kpr_mriadapt_hh
-ark_test_kpr_mriadapt_hh_logging
-ark_test_kpr_mriadapt_logging
-ark_test_slowerror_brusselator
-ark_test_slowerror_kpr
+  ark_kpr_nestedmri_logging
+  ark_test_accumerror_brusselator
+  ark_test_accumerror_kpr
+  ark_test_brusselator_mriadapt
+  ark_test_brusselator_mriadapt_hh
+  ark_test_brusselator_mriadapt_hh_logging
+  ark_test_brusselator_mriadapt_logging
+  ark_test_kpr_mriadapt
+  ark_test_kpr_mriadapt_hh
+  ark_test_kpr_mriadapt_hh_logging
+  ark_test_kpr_mriadapt_logging
+  ark_test_slowerror_brusselator
+  ark_test_slowerror_kpr
 ```
 
 If these were built successfully, you may skip directly to the section "Running tests" below.
@@ -72,35 +72,35 @@ We recommend that users follow the instructios below for installing both version
 [The SUNDIALS build instructions are linked here](https://sundials.readthedocs.io/en/latest/sundials/Install_link.html#building-and-installing-with-cmake).  Note that of the many SUNDIALS build options, this repository requires only a minimal SUNDIALS build.  The following steps can be used to build SUNDIALS using this minimal configuration:
 
 ```bash
-mkdir sundials-v7.3.0/build
-cd sundials-v7.3.0/build
-cmake -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Release ..
-make -j install
-cd -
+  mkdir sundials-v7.3.0/build
+  cd sundials-v7.3.0/build
+  cmake -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Release ..
+  make -j install
+  cd -
 
-mkdir sundials-mrihh/build
-cd sundials-mrihh/build
-cmake -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Release ..
-make -j install
-cd -
+  mkdir sundials-mrihh/build
+  cd sundials-mrihh/build
+  cmake -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Release ..
+  make -j install
+  cd -
 ```
 
 Additionally, to run the tests that will automatically log all internal time steps at each time scale, allowing plots of the "adaptivity history," you should build SUNDIALS two more times with additional logging enabled:
 
 ```bash
-mkdir sundials-v7.3.0/build-logging
-cd sundials-v7.3.0/build-logging
-cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
-make clean
-make -j install
-cd -
+  mkdir sundials-v7.3.0/build-logging
+  cd sundials-v7.3.0/build-logging
+  cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
+  make clean
+  make -j install
+  cd -
 
-mkdir sundials-mrihh/build-logging
-cd sundials-mrihh/build-logging
-cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
-make clean
-make -j install
-cd -
+  mkdir sundials-mrihh/build-logging
+  cd sundials-mrihh/build-logging
+  cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
+  make clean
+  make -j install
+  cd -
 ```
 
 Instructions for building SUNDIALS with additional options [may be found here](https://sundials.readthedocs.io/en/latest/sundials/Install_link.html).
@@ -110,21 +110,21 @@ Instructions for building SUNDIALS with additional options [may be found here](h
 Since each of NumPy, Matplotlib, and Pandas are widely used, it is likely that these are already installed on your system.  However, if those are missing or need to be updated, then we recommend that these be installed in a Python virtual environment, as follows:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r python_requirements.txt
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -r python_requirements.txt
 ```
 
 You may "deactivate" this Python environment from your current shell with the command
 
 ```bash
-deactivate
+  deactivate
 ```
 
 and in the future you can "reactivate" the python environment in your shell by running from the top-level directory of this repository
 
 ```bash
-source .venv/bin/activate
+  source .venv/bin/activate
 ```
 
 ### Building the tests
@@ -185,7 +185,19 @@ When these complete, the executables should each be in the top-level `bin` folde
 
 ## Running tests
 
-All tests and plotting utilities are organized into Python scripts.
+All tests and plotting utilities are organized into Python scripts.  The full set of tests can be run with the single shell script
+
+```bash
+  bash ./run-all-tests.sh
+```
+
+and when that completes, the full set of plots cna be generated with the single shell script
+
+```bash
+  bash ./make-all-plots.sh
+```
+
+The remainder of this section provides instructions for running individual tests and generating the corresponding plots.
 
 ### Slow error tests
 
@@ -201,6 +213,14 @@ or
 
 To generate the corresponding plots once these tests complete:
 
+```bash
+  ./plot_slowerror.py
+```
+or
+```bash
+  python3 plot_slowerror.py
+```
+
 ### Accumulated error tests
 
 To run the tests that assess the approaches for accumulating local errors in the inner solver to predict their effect on slow error:
@@ -211,6 +231,10 @@ To run the tests that assess the approaches for accumulating local errors in the
 
 To generate the corresponding plots once these tests complete:
 
+```bash
+  ./plot_accumerror.py
+```
+
 ### MRI adaptivity tests
 
 To run the tests that assess the quality of various combinations of embedded MRI methods and MRI adaptivity controllers:
@@ -219,9 +243,13 @@ To run the tests that assess the quality of various combinations of embedded MRI
   ./run_mriadapt_tests.py
 ```
 
-Note that some of these combinations will fail (particularly for the stiff Brusselator problem), causing error messages to print to the screen.
+Note that this script runs 4200 different test combinations, and so it can take a few minutes to complete.  We also note that some of these combinations will fail (particularly for the stiff Brusselator problem), causing error messages to print to the screen.
 
 To generate the corresponding plots once these tests complete:
+
+```bash
+  ./plot_mriadapt.py
+```
 
 ### Nested MRI tests
 
@@ -231,4 +259,18 @@ To run the tests that demonstrate MRI adaptivity within a nested multirate test 
   ./run_nested_kpr_tests.py
 ```
 
+This test has no corresponding plot, but it generates an Excel file with a table of the results (`kpr_nested_results.xlsx`)
+
+### Adaptivity comparison tests
+
+To run the tests that examine slow and fast time step size histories for a sampling of MRI adaptivity controllers:
+
+```bash
+  ./run_adaptivity_comparison.py
+```
+
 To generate the corresponding plots once these tests complete:
+
+```bash
+  ./plot_adaptivity_comparison.py
+```
