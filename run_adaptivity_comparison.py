@@ -103,7 +103,7 @@ def get_mrihh_step_histories(fname):
 
 
 # utility routine to run a kpr test, storing the run options and solver statistics
-def runtest_kpr(exe, e, omega, atol, rtol, mri, order, control, showcommand=True, removelog=False):
+def runtest_kpr(exe, e, omega, atol, rtol, mri, order, control, showcommand=False, removelog=True):
     stats = {'e': e, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
     runcommand = "%s --e %e --w %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, e, omega, atol, rtol, rtol, mri, order) + controller(control)
     logfile = 'kpr-log-' + control + '.txt'
@@ -142,7 +142,7 @@ def runtest_kpr(exe, e, omega, atol, rtol, mri, order, control, showcommand=True
         os.remove(logfile)
     return stats
 
-def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=True, removelog=False):
+def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=False, removelog=True):
     stats = {'ep': ep, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
     runcommand = "%s --ep %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, ep, atol, rtol, rtol, mri, order) + controller(control)
     logfile = 'bruss-log-' + control + '.txt'
