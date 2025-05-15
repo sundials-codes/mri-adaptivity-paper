@@ -8,7 +8,6 @@
 #------------------------------------------------------------
 
 # imports
-import socket
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -19,12 +18,6 @@ plt.rc('font', size=15)
 plt.rcParams['figure.figsize'] = [7.2, 4.8]
 plt.rcParams['text.usetex'] = True
 plt.rcParams['figure.constrained_layout.use'] = True
-
-#---------- FIX FOR BEHEMOTH ----------#
-hostname = socket.gethostname()
-if (hostname == "behemoth"):
-    plt.rcParams['text.usetex'] = False
-#--------------------------------------#
 
 # flags to turn on/off certain plots
 Generate_PDF = True
@@ -52,18 +45,18 @@ efficiency_bbox = (0.725, 0.975)
 # controllers to include in verification plots
 
 
-usecontrol= {'MRICC':True, 
-             'MRIDec-H0211':True, 
-             'MRIDec-H0321':True, 
+usecontrol= {'MRICC':True,
+             'MRIDec-H0211':True,
+             'MRIDec-H0321':True,
              'MRIDec-H211':True,
-             'MRIDec-H312':True, 
-             'MRIDec-I':True, 
-             'MRIHTol-H0211':True, 
+             'MRIDec-H312':True,
+             'MRIDec-I':True,
+             'MRIHTol-H0211':True,
              'MRIHTol-H0321':True,
-             'MRIHTol-H211':True, 
-             'MRIHTol-H312':True, 
-             'MRIHTol-I':True, 
-             'MRILL':True, 
+             'MRIHTol-H211':True,
+             'MRIHTol-H312':True,
+             'MRIHTol-I':True,
+             'MRILL':True,
              'MRIPI':True,
              'MRIPID':True}
 method_order = {'ARKODE_MRI_GARK_RALSTON2': 2,
@@ -85,18 +78,18 @@ method_order = {'ARKODE_MRI_GARK_RALSTON2': 2,
 cmap10 = plt.get_cmap('tab10')
 cmap20 = plt.get_cmap('tab20')
 
-controlcolor= {'MRICC': cmap10(0), 
-             'MRIDec-H0211': cmap10(1), 
-             'MRIDec-H0321': cmap10(2), 
+controlcolor= {'MRICC': cmap10(0),
+             'MRIDec-H0211': cmap10(1),
+             'MRIDec-H0321': cmap10(2),
              'MRIDec-H211': cmap10(3),
-             'MRIDec-H312': cmap10(4), 
-             'MRIDec-I': cmap10(5), 
-             'MRIHTol-H0211': cmap10(6), 
+             'MRIDec-H312': cmap10(4),
+             'MRIDec-I': cmap10(5),
+             'MRIHTol-H0211': cmap10(6),
              'MRIHTol-H0321': cmap10(7),
-             'MRIHTol-H211': cmap10(8), 
-             'MRIHTol-H312': cmap10(9), 
-             'MRIHTol-I': cmap10(10), 
-             'MRILL': cmap10(11), 
+             'MRIHTol-H211': cmap10(8),
+             'MRIHTol-H312': cmap10(9),
+             'MRIHTol-I': cmap10(10),
+             'MRILL': cmap10(11),
              'MRIPI': cmap10(12),
              'MRIPID': cmap10(13),}
 
@@ -204,7 +197,7 @@ def print_failed_tests(fname, prefix):
     print(prefix + ' failed ' + str(len(failed)) + ' tests')
     if (len(failed) > 0):
         print(failed)
-        
+
 def check(control, mri_method,removed_pairs,reverse=0):
     for i in removed_pairs:
         if i==(control,mri_method):
@@ -335,11 +328,11 @@ def make_accuracy_comparison_plot(data, mratekey, mratevals, mratetxt,mri_method
         accuracy_min2=np.array([1e10] * 5)
         for control in controllers:
             data=Master_data[Master_data['control'] == control]
-            for mri_method in mri_methods:  
-                # skip over failed tests    
+            for mri_method in mri_methods:
+                # skip over failed tests
                 if check(control,mri_method,removed_pairs):
                     continue
-                
+
                 # first multirate value
                 mrate = mratevals[0]
                 rtol = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['rtol'].array
@@ -356,7 +349,7 @@ def make_accuracy_comparison_plot(data, mratekey, mratevals, mratetxt,mri_method
                 accuracy = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['Accuracy'].array
                 accuracy_min2=np.minimum(accuracy_min2,accuracy)
                 accuracy_max2=np.maximum(accuracy_max2,accuracy)
-                
+
                 #ax2.loglog(rtol, accuracy, marker=msymbol, color=mcolor, ls='-', markersize=10)
                 ax2.loglog()
         ax1.fill_between(rtol, accuracy_min1, accuracy_max1, color=color[group], alpha=0.25,label=group)
@@ -375,7 +368,7 @@ def make_accuracy_comparison_plot(data, mratekey, mratevals, mratetxt,mri_method
         plt.savefig(picname + " filled in"+'.pdf')
 
 def make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, mri_methods, titletxt,rank_name):
-    
+
     comparison_data_slow1 = []
     comparison_data_fast1 = []
     comparison_data_slow2 = []
@@ -396,8 +389,8 @@ def make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, mri_
             faststeps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastSteps'].array
             fastfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastFails'].array
             comparison_data_slow1.append({'method': mri_method+' + '+control, 'works': slowsteps+slowfails, 'errors': error})
-            comparison_data_fast1.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})  
-                      
+            comparison_data_fast1.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
+
             # second multirate value
             mrate = mratevals[1]
             rtol = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['rtol']
@@ -409,7 +402,7 @@ def make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, mri_
             fastfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastFails'].array
             comparison_data_slow2.append({'method': mri_method+' + '+control, 'works': slowsteps+slowfails, 'errors': error})
             comparison_data_fast2.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
-            
+
     # output efficiency comparisons for both multirate values and for both slow/fast work
     ranks_slow1 = compare_efficiency(comparison_data_slow1,mratevals[0],'slow')
     ranks_slow1_loc=ranks_slow1.loc[ranks_slow1['AvgRank'] <= cut_off_rank, ['Controller', 'MRIMethod']]
@@ -419,7 +412,7 @@ def make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, mri_
 
     ranks_fast1 = compare_efficiency(comparison_data_fast1,mratevals[0],'fast')
     ranks_fast1_loc=ranks_fast1.loc[ranks_fast1['AvgRank'] <= cut_off_rank, ['Controller', 'MRIMethod']]
-    
+
     print('For ', titletxt, ' and mrateval = ', mratevals[0], ' the fast efficiency method ranks are:')
     print(ranks_fast1)
 
@@ -431,25 +424,25 @@ def make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, mri_
 
     ranks_fast2 = compare_efficiency(comparison_data_fast2,mratevals[1],'fast')
     ranks_fast2_loc=ranks_fast2.loc[ranks_fast2['AvgRank'] <= cut_off_rank, ['Controller', 'MRIMethod']]
-    
+
     print('For ', titletxt, ' and mrateval = ', mratevals[1], ' the fast efficiency method ranks are:')
     print(ranks_fast2)
-        
+
     # keeps all pairs who attains a low rank for both mrate values
     rankslow= pd.merge(ranks_slow1_loc,ranks_slow2_loc, on=['Controller', 'MRIMethod'], how='inner')
     rankfast= pd.merge(ranks_fast1_loc,ranks_fast2_loc, on=['Controller', 'MRIMethod'], how='inner')
     ranks=pd.concat([rankslow,rankfast]).drop_duplicates()
-    
-    
+
+
     # keeps all pairs who attains a low rank any any mrate values
     #ranks=pd.concat([ranks_slow1_loc,ranks_fast1_loc,ranks_slow2_loc,ranks_fast2_loc]).drop_duplicates()
-    
+
     ranks.to_excel(rank_name+'.xlsx',index=False)
-    
+
     # output statistic dataframe
     ranks_stats_df=pd.concat([ranks_slow1,ranks_fast1,ranks_slow2,ranks_fast2])
     ranks_stats_df.to_excel('ranks_stats_'+rank_name+'.xlsx',index=False)
-    
+
 def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, controllers, mri_methods,rank_names,xlim1,xlim2,xlim3,xlim4):
 
 
@@ -459,7 +452,7 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
     ax2 = fig.add_subplot(gs[0,1])  # top-middle
     ax3 = fig.add_subplot(gs[1,0])  # bottom-left
     ax4 = fig.add_subplot(gs[1,1])  # bottom-middle
-    
+
     retained_pairs=pd.read_excel(rank_names+'.xlsx')
     retained_pairs=list(retained_pairs.itertuples(index=False, name=None))
     comparison_data_slow1 = []
@@ -510,28 +503,28 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
     ax4.set_xlabel(r'fast work')
     ax1.set_ylabel(r'error, ' + mratetxt + ' = ' + str(mratevals[0]))
     ax3.set_ylabel(r'error, ' + mratetxt + ' = ' + str(mratevals[1]))
-    
+
     ax1.set_xlim(xlim1)
     ax2.set_xlim(xlim2)
     ax3.set_xlim(xlim3)
     ax4.set_xlim(xlim4)
-    
+
     ax1.grid(linestyle='--', linewidth=0.5)
     ax2.grid(linestyle='--', linewidth=0.5)
     ax3.grid(linestyle='--', linewidth=0.5)
     ax4.grid(linestyle='--', linewidth=0.5)
-    
-    
 
-    
+
+
+
     fig.legend(handles, labels, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox)
     if (Generate_PNG):
         plt.savefig('top_pairs'+rank_names + '.png')
     if (Generate_PDF):
         plt.savefig('top_pairs_efficencies'+rank_names + '.pdf')
-    
+
 def do_comparison_plots(fname, mratekey, mratevals, mratetxt,controllers, titletxt, picname,removed_pairs,rank_name,xlimlo,xlimmid,xlimhi):
-   
+
     """
     Given a saved Pandas dataframe file with results, and strings containing the base
     title and base output file name (without suffix), this does the following:
@@ -557,7 +550,7 @@ def do_comparison_plots(fname, mratekey, mratevals, mratetxt,controllers, titlet
     """
     data = pd.read_excel(fname)
     #data = filter_data(fname)
-    # verify that there are only 2 mrate values 
+    # verify that there are only 2 mrate values
     if (len(mratevals) != 2):
         raise ValueError('Error: this function can only be run with 2 multirate values')
 
@@ -570,7 +563,7 @@ def do_comparison_plots(fname, mratekey, mratevals, mratetxt,controllers, titlet
     make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, methods_lo,  titletxt, rank_name+'-lo')
     make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, methods_mid, titletxt, rank_name+'-mid')
     make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, methods_hi,  titletxt,rank_name+'-hi')
-    
+
     best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt,controllers, methods_lo, rank_name+'-lo',xlimlo[0],xlimlo[1],xlimlo[2],xlimlo[3])
     best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt,controllers, methods_mid,rank_name+'-mid',xlimmid[0],xlimmid[1],xlimmid[2],xlimmid[3])
     best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, controllers, methods_hi,rank_name+'-hi',xlimhi[0],xlimhi[1],xlimhi[2],xlimhi[3])

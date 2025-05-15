@@ -9,7 +9,7 @@ python plot_slowerror.py
 python plot_accumerror.py
 
 ## plot main MRI adaptivity results
-#python plot_mriadapt.py
+python plot_mriadapt.py
 
 # plot adaptivity stepsize comparisons
 python plot_adaptivity_comparison.py
