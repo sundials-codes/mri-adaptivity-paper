@@ -11,9 +11,6 @@ python plot_accumerror.py
 ## plot main MRI adaptivity results
 #python plot_mriadapt.py
 
-## plot nested MRI adaptivity results
-#python plot_nested_kpr.py
-
 # plot adaptivity stepsize comparisons
 python plot_adaptivity_comparison.py
 
