@@ -3,14 +3,14 @@
 # This script generates plots of all test results.  These results should already be stored on disk, from running the companion run-all-test.sh script.
 
 # plot slow error test results
-python plot_slowerror.py
+python3 plot_slowerror.py
 
 # plot accumulated error results
-python plot_accumerror.py
+python3 plot_accumerror.py
 
 ## plot main MRI adaptivity results
-python plot_mriadapt.py
+python3 plot_mriadapt.py
 
 # plot adaptivity stepsize comparisons
-python plot_adaptivity_comparison.py
+python3 plot_adaptivity_comparison.py
 
