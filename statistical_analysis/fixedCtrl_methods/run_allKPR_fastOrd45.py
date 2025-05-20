@@ -41,16 +41,16 @@ allStd_KPR_fastOrd45_HTol_I = data_KPR_fastOrd45_HTol_I["AvgRank"].std()
 methodAvg_KPR_fastOrd45_HTol_I = data_KPR_fastOrd45_HTol_I.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_HTol_I["MRI_zScore_FMO45_KPR_HTol_I"] = data_KPR_fastOrd45_HTol_I["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_I)
-data_KPR_fastOrd45_HTol_I["MRI_zScore_FMO45_KPR_HTol_I"] = (data_KPR_fastOrd45_HTol_I["MRI_zScore_FMO45_KPR_HTol_I"] - allAvg_KPR_fastOrd45_HTol_I)/allStd_KPR_fastOrd45_HTol_I 
+data_KPR_fastOrd45_HTol_I["zScore"] = data_KPR_fastOrd45_HTol_I["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_I)
+data_KPR_fastOrd45_HTol_I["zScore"] = (data_KPR_fastOrd45_HTol_I["zScore"] - allAvg_KPR_fastOrd45_HTol_I)/allStd_KPR_fastOrd45_HTol_I 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_HTol_I["MRI_zScore_FMO45_KPR_HTol_I"] < -zscore_threshold,
-    data_KPR_fastOrd45_HTol_I["MRI_zScore_FMO45_KPR_HTol_I"] > zscore_threshold
+    data_KPR_fastOrd45_HTol_I["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_HTol_I["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_HTol_I["MRI_status_FMO45_KPR_HTol_I"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_HTol_I["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -65,16 +65,16 @@ allStd_KPR_fastOrd45_Dec_I = data_KPR_fastOrd45_Dec_I["AvgRank"].std()
 methodAvg_KPR_fastOrd45_Dec_I = data_KPR_fastOrd45_Dec_I.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_Dec_I["MRI_zScore_FMO45_KPR_Dec_I"] = data_KPR_fastOrd45_Dec_I["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_I)
-data_KPR_fastOrd45_Dec_I["MRI_zScore_FMO45_KPR_Dec_I"] = (data_KPR_fastOrd45_Dec_I["MRI_zScore_FMO45_KPR_Dec_I"] - allAvg_KPR_fastOrd45_Dec_I)/allStd_KPR_fastOrd45_Dec_I 
+data_KPR_fastOrd45_Dec_I["zScore"] = data_KPR_fastOrd45_Dec_I["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_I)
+data_KPR_fastOrd45_Dec_I["zScore"] = (data_KPR_fastOrd45_Dec_I["zScore"] - allAvg_KPR_fastOrd45_Dec_I)/allStd_KPR_fastOrd45_Dec_I 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_Dec_I["MRI_zScore_FMO45_KPR_Dec_I"] < -zscore_threshold,
-    data_KPR_fastOrd45_Dec_I["MRI_zScore_FMO45_KPR_Dec_I"] > zscore_threshold
+    data_KPR_fastOrd45_Dec_I["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_Dec_I["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_Dec_I["MRI_status_FMO45_KPR_Dec_I"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_Dec_I["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -89,16 +89,16 @@ allStd_KPR_fastOrd45_HTol_H0321= data_KPR_fastOrd45_HTol_H0321["AvgRank"].std()
 methodAvg_KPR_fastOrd45_HTol_H0321 = data_KPR_fastOrd45_HTol_H0321.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_HTol_H0321["MRI_zScore_FMO45_KPR_HTol_H0321"] = data_KPR_fastOrd45_HTol_H0321["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_H0321)
-data_KPR_fastOrd45_HTol_H0321["MRI_zScore_FMO45_KPR_HTol_H0321"] = (data_KPR_fastOrd45_HTol_H0321["MRI_zScore_FMO45_KPR_HTol_H0321"] - allAvg_KPR_fastOrd45_HTol_H0321)/allStd_KPR_fastOrd45_HTol_H0321 
+data_KPR_fastOrd45_HTol_H0321["zScore"] = data_KPR_fastOrd45_HTol_H0321["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_H0321)
+data_KPR_fastOrd45_HTol_H0321["zScore"] = (data_KPR_fastOrd45_HTol_H0321["zScore"] - allAvg_KPR_fastOrd45_HTol_H0321)/allStd_KPR_fastOrd45_HTol_H0321 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_HTol_H0321["MRI_zScore_FMO45_KPR_HTol_H0321"] < -zscore_threshold,
-    data_KPR_fastOrd45_HTol_H0321["MRI_zScore_FMO45_KPR_HTol_H0321"] > zscore_threshold
+    data_KPR_fastOrd45_HTol_H0321["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_HTol_H0321["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_HTol_H0321["MRI_status_FMO45_KPR_HTol_H0321"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_HTol_H0321["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -113,16 +113,16 @@ allStd_KPR_fastOrd45_Dec_H0321= data_KPR_fastOrd45_Dec_H0321["AvgRank"].std()
 methodAvg_KPR_fastOrd45_Dec_H0321 = data_KPR_fastOrd45_Dec_H0321.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_Dec_H0321["MRI_zScore_FMO45_KPR_Dec_H0321"] = data_KPR_fastOrd45_Dec_H0321["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_H0321)
-data_KPR_fastOrd45_Dec_H0321["MRI_zScore_FMO45_KPR_Dec_H0321"] = (data_KPR_fastOrd45_Dec_H0321["MRI_zScore_FMO45_KPR_Dec_H0321"] - allAvg_KPR_fastOrd45_Dec_H0321)/allStd_KPR_fastOrd45_Dec_H0321 
+data_KPR_fastOrd45_Dec_H0321["zScore"] = data_KPR_fastOrd45_Dec_H0321["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_H0321)
+data_KPR_fastOrd45_Dec_H0321["zScore"] = (data_KPR_fastOrd45_Dec_H0321["zScore"] - allAvg_KPR_fastOrd45_Dec_H0321)/allStd_KPR_fastOrd45_Dec_H0321 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_Dec_H0321["MRI_zScore_FMO45_KPR_Dec_H0321"] < -zscore_threshold,
-    data_KPR_fastOrd45_Dec_H0321["MRI_zScore_FMO45_KPR_Dec_H0321"] > zscore_threshold
+    data_KPR_fastOrd45_Dec_H0321["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_Dec_H0321["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_Dec_H0321["MRI_status_FMO45_KPR_Dec_H0321"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_Dec_H0321["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -137,16 +137,16 @@ allStd_KPR_fastOrd45_HTol_H211 = data_KPR_fastOrd45_HTol_H211["AvgRank"].std()
 methodAvg_KPR_fastOrd45_HTol_H211 = data_KPR_fastOrd45_HTol_H211.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_HTol_H211["MRI_zScore_FMO45_KPR_HTol_H211"] = data_KPR_fastOrd45_HTol_H211["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_H211)
-data_KPR_fastOrd45_HTol_H211["MRI_zScore_FMO45_KPR_HTol_H211"] = (data_KPR_fastOrd45_HTol_H211["MRI_zScore_FMO45_KPR_HTol_H211"] - allAvg_KPR_fastOrd45_HTol_H211)/allStd_KPR_fastOrd45_HTol_H211 
+data_KPR_fastOrd45_HTol_H211["zScore"] = data_KPR_fastOrd45_HTol_H211["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_H211)
+data_KPR_fastOrd45_HTol_H211["zScore"] = (data_KPR_fastOrd45_HTol_H211["zScore"] - allAvg_KPR_fastOrd45_HTol_H211)/allStd_KPR_fastOrd45_HTol_H211 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_HTol_H211["MRI_zScore_FMO45_KPR_HTol_H211"] < -zscore_threshold,
-    data_KPR_fastOrd45_HTol_H211["MRI_zScore_FMO45_KPR_HTol_H211"] > zscore_threshold
+    data_KPR_fastOrd45_HTol_H211["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_HTol_H211["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_HTol_H211["MRI_status_FMO45_KPR_HTol_H211"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_HTol_H211["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -161,16 +161,16 @@ allStd_KPR_fastOrd45_Dec_H211= data_KPR_fastOrd45_Dec_H211["AvgRank"].std()
 methodAvg_KPR_fastOrd45_Dec_H211 = data_KPR_fastOrd45_Dec_H211.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_Dec_H211["MRI_zScore_FMO45_KPR_Dec_H211"] = data_KPR_fastOrd45_Dec_H211["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_H211)
-data_KPR_fastOrd45_Dec_H211["MRI_zScore_FMO45_KPR_Dec_H211"] = (data_KPR_fastOrd45_Dec_H211["MRI_zScore_FMO45_KPR_Dec_H211"] - allAvg_KPR_fastOrd45_Dec_H211)/allStd_KPR_fastOrd45_Dec_H211 
+data_KPR_fastOrd45_Dec_H211["zScore"] = data_KPR_fastOrd45_Dec_H211["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_H211)
+data_KPR_fastOrd45_Dec_H211["zScore"] = (data_KPR_fastOrd45_Dec_H211["zScore"] - allAvg_KPR_fastOrd45_Dec_H211)/allStd_KPR_fastOrd45_Dec_H211 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_Dec_H211["MRI_zScore_FMO45_KPR_Dec_H211"] < -zscore_threshold,
-    data_KPR_fastOrd45_Dec_H211["MRI_zScore_FMO45_KPR_Dec_H211"] > zscore_threshold
+    data_KPR_fastOrd45_Dec_H211["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_Dec_H211["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_Dec_H211["MRI_status_FMO45_KPR_Dec_H211"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_Dec_H211["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -185,16 +185,16 @@ allStd_KPR_fastOrd45_HTol_H0211 = data_KPR_fastOrd45_HTol_H0211["AvgRank"].std()
 methodAvg_KPR_fastOrd45_HTol_H0211 = data_KPR_fastOrd45_HTol_H0211.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_HTol_H0211["MRI_zScore_FMO45_KPR_HTol_H0211"] = data_KPR_fastOrd45_HTol_H0211["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_H0211)
-data_KPR_fastOrd45_HTol_H0211["MRI_zScore_FMO45_KPR_HTol_H0211"] = (data_KPR_fastOrd45_HTol_H0211["MRI_zScore_FMO45_KPR_HTol_H0211"] - allAvg_KPR_fastOrd45_HTol_H0211)/allStd_KPR_fastOrd45_HTol_H0211 
+data_KPR_fastOrd45_HTol_H0211["zScore"] = data_KPR_fastOrd45_HTol_H0211["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_H0211)
+data_KPR_fastOrd45_HTol_H0211["zScore"] = (data_KPR_fastOrd45_HTol_H0211["zScore"] - allAvg_KPR_fastOrd45_HTol_H0211)/allStd_KPR_fastOrd45_HTol_H0211 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_HTol_H0211["MRI_zScore_FMO45_KPR_HTol_H0211"] < -zscore_threshold,
-    data_KPR_fastOrd45_HTol_H0211["MRI_zScore_FMO45_KPR_HTol_H0211"] > zscore_threshold
+    data_KPR_fastOrd45_HTol_H0211["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_HTol_H0211["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_HTol_H0211["MRI_status_FMO45_KPR_HTol_H0211"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_HTol_H0211["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -209,16 +209,16 @@ allStd_KPR_fastOrd45_Dec_H0211= data_KPR_fastOrd45_Dec_H0211["AvgRank"].std()
 methodAvg_KPR_fastOrd45_Dec_H0211 = data_KPR_fastOrd45_Dec_H0211.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_Dec_H0211["MRI_zScore_FMO45_KPR_Dec_H0211"] = data_KPR_fastOrd45_Dec_H0211["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_H0211)
-data_KPR_fastOrd45_Dec_H0211["MRI_zScore_FMO45_KPR_Dec_H0211"] = (data_KPR_fastOrd45_Dec_H0211["MRI_zScore_FMO45_KPR_Dec_H0211"] - allAvg_KPR_fastOrd45_Dec_H0211)/allStd_KPR_fastOrd45_Dec_H0211 
+data_KPR_fastOrd45_Dec_H0211["zScore"] = data_KPR_fastOrd45_Dec_H0211["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_H0211)
+data_KPR_fastOrd45_Dec_H0211["zScore"] = (data_KPR_fastOrd45_Dec_H0211["zScore"] - allAvg_KPR_fastOrd45_Dec_H0211)/allStd_KPR_fastOrd45_Dec_H0211 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_Dec_H0211["MRI_zScore_FMO45_KPR_Dec_H0211"] < -zscore_threshold,
-    data_KPR_fastOrd45_Dec_H0211["MRI_zScore_FMO45_KPR_Dec_H0211"] > zscore_threshold
+    data_KPR_fastOrd45_Dec_H0211["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_Dec_H0211["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_Dec_H0211["MRI_status_FMO45_KPR_Dec_H0211"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_Dec_H0211["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -233,16 +233,16 @@ allStd_KPR_fastOrd45_HTol_H312 = data_KPR_fastOrd45_HTol_H312["AvgRank"].std()
 methodAvg_KPR_fastOrd45_HTol_H312 = data_KPR_fastOrd45_HTol_H312.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_HTol_H312["MRI_zScore_FMO45_KPR_HTol_H312"] = data_KPR_fastOrd45_HTol_H312["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_H312)
-data_KPR_fastOrd45_HTol_H312["MRI_zScore_FMO45_KPR_HTol_H312"] = (data_KPR_fastOrd45_HTol_H312["MRI_zScore_FMO45_KPR_HTol_H312"] - allAvg_KPR_fastOrd45_HTol_H312)/allStd_KPR_fastOrd45_HTol_H312 
+data_KPR_fastOrd45_HTol_H312["zScore"] = data_KPR_fastOrd45_HTol_H312["MRIMethod"].map(methodAvg_KPR_fastOrd45_HTol_H312)
+data_KPR_fastOrd45_HTol_H312["zScore"] = (data_KPR_fastOrd45_HTol_H312["zScore"] - allAvg_KPR_fastOrd45_HTol_H312)/allStd_KPR_fastOrd45_HTol_H312 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_HTol_H312["MRI_zScore_FMO45_KPR_HTol_H312"] < -zscore_threshold,
-    data_KPR_fastOrd45_HTol_H312["MRI_zScore_FMO45_KPR_HTol_H312"] > zscore_threshold
+    data_KPR_fastOrd45_HTol_H312["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_HTol_H312["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_HTol_H312["MRI_status_FMO45_KPR_HTol_H312"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_HTol_H312["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -257,16 +257,16 @@ allStd_KPR_fastOrd45_Dec_H312= data_KPR_fastOrd45_Dec_H312["AvgRank"].std()
 methodAvg_KPR_fastOrd45_Dec_H312 = data_KPR_fastOrd45_Dec_H312.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_KPR_fastOrd45_Dec_H312["MRI_zScore_FMO45_KPR_Dec_H312"] = data_KPR_fastOrd45_Dec_H312["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_H312)
-data_KPR_fastOrd45_Dec_H312["MRI_zScore_FMO45_KPR_Dec_H312"] = (data_KPR_fastOrd45_Dec_H312["MRI_zScore_FMO45_KPR_Dec_H312"] - allAvg_KPR_fastOrd45_Dec_H312)/allStd_KPR_fastOrd45_Dec_H312 
+data_KPR_fastOrd45_Dec_H312["zScore"] = data_KPR_fastOrd45_Dec_H312["MRIMethod"].map(methodAvg_KPR_fastOrd45_Dec_H312)
+data_KPR_fastOrd45_Dec_H312["zScore"] = (data_KPR_fastOrd45_Dec_H312["zScore"] - allAvg_KPR_fastOrd45_Dec_H312)/allStd_KPR_fastOrd45_Dec_H312 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_KPR_fastOrd45_Dec_H312["MRI_zScore_FMO45_KPR_Dec_H312"] < -zscore_threshold,
-    data_KPR_fastOrd45_Dec_H312["MRI_zScore_FMO45_KPR_Dec_H312"] > zscore_threshold
+    data_KPR_fastOrd45_Dec_H312["zScore"] < -zscore_threshold,
+    data_KPR_fastOrd45_Dec_H312["zScore"] > zscore_threshold
 ]
 
-data_KPR_fastOrd45_Dec_H312["MRI_status_FMO45_KPR_Dec_H312"] = np.select(conditions, status, default="intermediate")
+data_KPR_fastOrd45_Dec_H312["status"] = np.select(conditions, status, default="intermediate")
 
 
 # ----------------------------------- Store all data in one excel file with multiple sheets ---------------------------------
@@ -285,6 +285,87 @@ with pd.ExcelWriter('allKPR_fastOrder45.xlsx') as writer:
 
     data_KPR_fastOrd45_HTol_H312.to_excel(writer, sheet_name='data_KPR_fastOrd45_HTol_H312', index=False)
     data_KPR_fastOrd45_Dec_H312.to_excel(writer, sheet_name='data_KPR_fastOrd45_Dec_H312', index=False)
+
+
+
+###############################################################################################################################
+# --------------------------------------- Compute the Average z-score of Each Method ------------------------------------------
+# load excel file
+filename = "allKPR_fastOrder45.xlsx"
+
+# load the sheetnames
+xls = pd.ExcelFile(filename)
+sheetNames = xls.sheet_names
+
+# store the zsores of each method across the different controllers
+ERK45a_zscores    = []
+MERK43_zscores    = []
+MERK54_zscores    = []
+SR43_zscores      = []
+ESDIRK46a_zscores = []
+
+for sheet in sheetNames:
+    df = pd.read_excel(filename, sheet_name=sheet)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_MRI_GARK_ERK45a
+    ERK45a_values = df[df["MRIMethod"] == "ARKODE_MRI_GARK_ERK45a"]
+
+    # since the zscore values are the same just pick one
+    valueERK45a  = ERK45a_values["zScore"].iloc[0]
+    ERK45a_zscores.append(valueERK45a)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_MERK43
+    MERK43_values = df[df["MRIMethod"] == "ARKODE_MERK43"]
+
+    # since the zscore values are the same just pick one
+    valueMERK43  = MERK43_values["zScore"].iloc[0]
+    MERK43_zscores.append(valueMERK43)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_MERK54
+    MERK54_values = df[df["MRIMethod"] == "ARKODE_MERK54"]
+
+    # since the zscore values are the same just pick one
+    valueMERK54 = MERK54_values["zScore"].iloc[0]
+    MERK54_zscores.append(valueMERK54)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_IMEX_MRI_SR43
+    SR43_values = df[df["MRIMethod"] == "ARKODE_IMEX_MRI_SR43"]
+
+    # since the zscore values are the same just pick one
+    valueSR43 = SR43_values["zScore"].iloc[0]
+    SR43_zscores.append(valueSR43)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_MRI_GARK_ESDIRK46a
+    ESDIRK46a_values = df[df["MRIMethod"] == "ARKODE_MRI_GARK_ESDIRK46a"]
+
+    # since the zscore values are the same just pick one
+    valueESDIRK46a = ESDIRK46a_values["zScore"].iloc[0]
+    ESDIRK46a_zscores.append(valueESDIRK46a)
+
+
+# compute the average zscores
+with open("AvgZscores_KPR_fastOrd45.txt", "w") as file:
+    average_ERK45a = sum(ERK45a_zscores) / len(ERK45a_zscores)
+    file.write(f"Average zscore for ARKODE_MRI_GARK_ERK45a (fast KPR): {average_ERK45a}\n\n")
+
+    average_MERK43 = sum(MERK43_zscores) / len(MERK43_zscores)
+    file.write(f"Average zscore for ARKODE_MERK43 (fast KPR): {average_MERK43}\n\n")
+
+    average_MERK54= sum(MERK54_zscores) / len(MERK54_zscores)
+    file.write(f"Average zscore for ARKODE_MERK54 (fast KPR): {average_MERK54}\n\n")
+
+    average_SR43  = sum(SR43_zscores) / len(SR43_zscores)
+    file.write(f"Average zscore for ARKODE_IMEX_MRI_SR43 (fast KPR): {average_SR43}\n\n")
+
+    average_ESDIRK46a  = sum(ESDIRK46a_zscores) / len(ESDIRK46a_zscores)
+    file.write(f"Average zscore for ARKODE_MRI_GARK_ESDIRK46a (fast KPR): {average_ESDIRK46a}\n\n")
+
+
 
 
 

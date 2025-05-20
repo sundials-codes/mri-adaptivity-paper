@@ -41,16 +41,16 @@ allStd_Bruss_fastOrd3_HTol_I = data_Bruss_fastOrd3_HTol_I["AvgRank"].std()
 methodAvg_Bruss_fastOrd3_HTol_I = data_Bruss_fastOrd3_HTol_I.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_HTol_I["MRI_zScore_FMO3_Bruss_HTol_I"] = data_Bruss_fastOrd3_HTol_I["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_I)
-data_Bruss_fastOrd3_HTol_I["MRI_zScore_FMO3_Bruss_HTol_I"] = (data_Bruss_fastOrd3_HTol_I["MRI_zScore_FMO3_Bruss_HTol_I"] - allAvg_Bruss_fastOrd3_HTol_I)/allStd_Bruss_fastOrd3_HTol_I 
+data_Bruss_fastOrd3_HTol_I["zScore"] = data_Bruss_fastOrd3_HTol_I["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_I)
+data_Bruss_fastOrd3_HTol_I["zScore"] = (data_Bruss_fastOrd3_HTol_I["zScore"] - allAvg_Bruss_fastOrd3_HTol_I)/allStd_Bruss_fastOrd3_HTol_I 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_HTol_I["MRI_zScore_FMO3_Bruss_HTol_I"] < -zscore_threshold,
-    data_Bruss_fastOrd3_HTol_I["MRI_zScore_FMO3_Bruss_HTol_I"] > zscore_threshold
+    data_Bruss_fastOrd3_HTol_I["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_HTol_I["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_HTol_I["MRI_status_FMO3_Bruss_HTol_I"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_HTol_I["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -65,16 +65,16 @@ allStd_Bruss_fastOrd3_Dec_I = data_Bruss_fastOrd3_Dec_I["AvgRank"].std()
 methodAvg_Bruss_fastOrd3_Dec_I = data_Bruss_fastOrd3_Dec_I.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_Dec_I["MRI_zScore_FMO3_Bruss_Dec_I"] = data_Bruss_fastOrd3_Dec_I["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_I)
-data_Bruss_fastOrd3_Dec_I["MRI_zScore_FMO3_Bruss_Dec_I"] = (data_Bruss_fastOrd3_Dec_I["MRI_zScore_FMO3_Bruss_Dec_I"] - allAvg_Bruss_fastOrd3_Dec_I)/allStd_Bruss_fastOrd3_Dec_I 
+data_Bruss_fastOrd3_Dec_I["zScore"] = data_Bruss_fastOrd3_Dec_I["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_I)
+data_Bruss_fastOrd3_Dec_I["zScore"] = (data_Bruss_fastOrd3_Dec_I["zScore"] - allAvg_Bruss_fastOrd3_Dec_I)/allStd_Bruss_fastOrd3_Dec_I 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_Dec_I["MRI_zScore_FMO3_Bruss_Dec_I"] < -zscore_threshold,
-    data_Bruss_fastOrd3_Dec_I["MRI_zScore_FMO3_Bruss_Dec_I"] > zscore_threshold
+    data_Bruss_fastOrd3_Dec_I["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_Dec_I["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_Dec_I["MRI_status_FMO3_Bruss_Dec_I"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_Dec_I["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -89,16 +89,16 @@ allStd_Bruss_fastOrd3_HTol_H0321= data_Bruss_fastOrd3_HTol_H0321["AvgRank"].std(
 methodAvg_Bruss_fastOrd3_HTol_H0321 = data_Bruss_fastOrd3_HTol_H0321.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_HTol_H0321["MRI_zScore_FMO3_Bruss_HTol_H0321"] = data_Bruss_fastOrd3_HTol_H0321["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_H0321)
-data_Bruss_fastOrd3_HTol_H0321["MRI_zScore_FMO3_Bruss_HTol_H0321"] = (data_Bruss_fastOrd3_HTol_H0321["MRI_zScore_FMO3_Bruss_HTol_H0321"] - allAvg_Bruss_fastOrd3_HTol_H0321)/allStd_Bruss_fastOrd3_HTol_H0321 
+data_Bruss_fastOrd3_HTol_H0321["zScore"] = data_Bruss_fastOrd3_HTol_H0321["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_H0321)
+data_Bruss_fastOrd3_HTol_H0321["zScore"] = (data_Bruss_fastOrd3_HTol_H0321["zScore"] - allAvg_Bruss_fastOrd3_HTol_H0321)/allStd_Bruss_fastOrd3_HTol_H0321 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_HTol_H0321["MRI_zScore_FMO3_Bruss_HTol_H0321"] < -zscore_threshold,
-    data_Bruss_fastOrd3_HTol_H0321["MRI_zScore_FMO3_Bruss_HTol_H0321"] > zscore_threshold
+    data_Bruss_fastOrd3_HTol_H0321["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_HTol_H0321["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_HTol_H0321["MRI_status_FMO3_Bruss_HTol_H0321"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_HTol_H0321["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -113,16 +113,16 @@ allStd_Bruss_fastOrd3_Dec_H0321= data_Bruss_fastOrd3_Dec_H0321["AvgRank"].std()
 methodAvg_Bruss_fastOrd3_Dec_H0321 = data_Bruss_fastOrd3_Dec_H0321.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_Dec_H0321["MRI_zScore_FMO3_Bruss_Dec_H0321"] = data_Bruss_fastOrd3_Dec_H0321["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_H0321)
-data_Bruss_fastOrd3_Dec_H0321["MRI_zScore_FMO3_Bruss_Dec_H0321"] = (data_Bruss_fastOrd3_Dec_H0321["MRI_zScore_FMO3_Bruss_Dec_H0321"] - allAvg_Bruss_fastOrd3_Dec_H0321)/allStd_Bruss_fastOrd3_Dec_H0321 
+data_Bruss_fastOrd3_Dec_H0321["zScore"] = data_Bruss_fastOrd3_Dec_H0321["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_H0321)
+data_Bruss_fastOrd3_Dec_H0321["zScore"] = (data_Bruss_fastOrd3_Dec_H0321["zScore"] - allAvg_Bruss_fastOrd3_Dec_H0321)/allStd_Bruss_fastOrd3_Dec_H0321 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_Dec_H0321["MRI_zScore_FMO3_Bruss_Dec_H0321"] < -zscore_threshold,
-    data_Bruss_fastOrd3_Dec_H0321["MRI_zScore_FMO3_Bruss_Dec_H0321"] > zscore_threshold
+    data_Bruss_fastOrd3_Dec_H0321["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_Dec_H0321["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_Dec_H0321["MRI_status_FMO3_Bruss_Dec_H0321"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_Dec_H0321["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -137,16 +137,16 @@ allStd_Bruss_fastOrd3_HTol_H211 = data_Bruss_fastOrd3_HTol_H211["AvgRank"].std()
 methodAvg_Bruss_fastOrd3_HTol_H211 = data_Bruss_fastOrd3_HTol_H211.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_HTol_H211["MRI_zScore_FMO3_Bruss_HTol_H211"] = data_Bruss_fastOrd3_HTol_H211["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_H211)
-data_Bruss_fastOrd3_HTol_H211["MRI_zScore_FMO3_Bruss_HTol_H211"] = (data_Bruss_fastOrd3_HTol_H211["MRI_zScore_FMO3_Bruss_HTol_H211"] - allAvg_Bruss_fastOrd3_HTol_H211)/allStd_Bruss_fastOrd3_HTol_H211 
+data_Bruss_fastOrd3_HTol_H211["zScore"] = data_Bruss_fastOrd3_HTol_H211["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_H211)
+data_Bruss_fastOrd3_HTol_H211["zScore"] = (data_Bruss_fastOrd3_HTol_H211["zScore"] - allAvg_Bruss_fastOrd3_HTol_H211)/allStd_Bruss_fastOrd3_HTol_H211 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_HTol_H211["MRI_zScore_FMO3_Bruss_HTol_H211"] < -zscore_threshold,
-    data_Bruss_fastOrd3_HTol_H211["MRI_zScore_FMO3_Bruss_HTol_H211"] > zscore_threshold
+    data_Bruss_fastOrd3_HTol_H211["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_HTol_H211["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_HTol_H211["MRI_status_FMO3_Bruss_HTol_H211"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_HTol_H211["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -161,16 +161,16 @@ allStd_Bruss_fastOrd3_Dec_H211= data_Bruss_fastOrd3_Dec_H211["AvgRank"].std()
 methodAvg_Bruss_fastOrd3_Dec_H211 = data_Bruss_fastOrd3_Dec_H211.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_Dec_H211["MRI_zScore_FMO3_Bruss_Dec_H211"] = data_Bruss_fastOrd3_Dec_H211["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_H211)
-data_Bruss_fastOrd3_Dec_H211["MRI_zScore_FMO3_Bruss_Dec_H211"] = (data_Bruss_fastOrd3_Dec_H211["MRI_zScore_FMO3_Bruss_Dec_H211"] - allAvg_Bruss_fastOrd3_Dec_H211)/allStd_Bruss_fastOrd3_Dec_H211 
+data_Bruss_fastOrd3_Dec_H211["zScore"] = data_Bruss_fastOrd3_Dec_H211["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_H211)
+data_Bruss_fastOrd3_Dec_H211["zScore"] = (data_Bruss_fastOrd3_Dec_H211["zScore"] - allAvg_Bruss_fastOrd3_Dec_H211)/allStd_Bruss_fastOrd3_Dec_H211 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_Dec_H211["MRI_zScore_FMO3_Bruss_Dec_H211"] < -zscore_threshold,
-    data_Bruss_fastOrd3_Dec_H211["MRI_zScore_FMO3_Bruss_Dec_H211"] > zscore_threshold
+    data_Bruss_fastOrd3_Dec_H211["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_Dec_H211["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_Dec_H211["MRI_status_FMO3_Bruss_Dec_H211"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_Dec_H211["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -185,16 +185,16 @@ allStd_Bruss_fastOrd3_HTol_H0211 = data_Bruss_fastOrd3_HTol_H0211["AvgRank"].std
 methodAvg_Bruss_fastOrd3_HTol_H0211 = data_Bruss_fastOrd3_HTol_H0211.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_HTol_H0211["MRI_zScore_FMO3_Bruss_HTol_H0211"] = data_Bruss_fastOrd3_HTol_H0211["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_H0211)
-data_Bruss_fastOrd3_HTol_H0211["MRI_zScore_FMO3_Bruss_HTol_H0211"] = (data_Bruss_fastOrd3_HTol_H0211["MRI_zScore_FMO3_Bruss_HTol_H0211"] - allAvg_Bruss_fastOrd3_HTol_H0211)/allStd_Bruss_fastOrd3_HTol_H0211 
+data_Bruss_fastOrd3_HTol_H0211["zScore"] = data_Bruss_fastOrd3_HTol_H0211["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_H0211)
+data_Bruss_fastOrd3_HTol_H0211["zScore"] = (data_Bruss_fastOrd3_HTol_H0211["zScore"] - allAvg_Bruss_fastOrd3_HTol_H0211)/allStd_Bruss_fastOrd3_HTol_H0211 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_HTol_H0211["MRI_zScore_FMO3_Bruss_HTol_H0211"] < -zscore_threshold,
-    data_Bruss_fastOrd3_HTol_H0211["MRI_zScore_FMO3_Bruss_HTol_H0211"] > zscore_threshold
+    data_Bruss_fastOrd3_HTol_H0211["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_HTol_H0211["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_HTol_H0211["MRI_status_FMO3_Bruss_HTol_H0211"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_HTol_H0211["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -209,16 +209,16 @@ allStd_Bruss_fastOrd3_Dec_H0211= data_Bruss_fastOrd3_Dec_H0211["AvgRank"].std()
 methodAvg_Bruss_fastOrd3_Dec_H0211 = data_Bruss_fastOrd3_Dec_H0211.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_Dec_H0211["MRI_zScore_FMO3_Bruss_Dec_H0211"] = data_Bruss_fastOrd3_Dec_H0211["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_H0211)
-data_Bruss_fastOrd3_Dec_H0211["MRI_zScore_FMO3_Bruss_Dec_H0211"] = (data_Bruss_fastOrd3_Dec_H0211["MRI_zScore_FMO3_Bruss_Dec_H0211"] - allAvg_Bruss_fastOrd3_Dec_H0211)/allStd_Bruss_fastOrd3_Dec_H0211 
+data_Bruss_fastOrd3_Dec_H0211["zScore"] = data_Bruss_fastOrd3_Dec_H0211["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_H0211)
+data_Bruss_fastOrd3_Dec_H0211["zScore"] = (data_Bruss_fastOrd3_Dec_H0211["zScore"] - allAvg_Bruss_fastOrd3_Dec_H0211)/allStd_Bruss_fastOrd3_Dec_H0211 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_Dec_H0211["MRI_zScore_FMO3_Bruss_Dec_H0211"] < -zscore_threshold,
-    data_Bruss_fastOrd3_Dec_H0211["MRI_zScore_FMO3_Bruss_Dec_H0211"] > zscore_threshold
+    data_Bruss_fastOrd3_Dec_H0211["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_Dec_H0211["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_Dec_H0211["MRI_status_FMO3_Bruss_Dec_H0211"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_Dec_H0211["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -233,16 +233,16 @@ allStd_Bruss_fastOrd3_HTol_H312 = data_Bruss_fastOrd3_HTol_H312["AvgRank"].std()
 methodAvg_Bruss_fastOrd3_HTol_H312 = data_Bruss_fastOrd3_HTol_H312.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_HTol_H312["MRI_zScore_FMO3_Bruss_HTol_H312"] = data_Bruss_fastOrd3_HTol_H312["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_H312)
-data_Bruss_fastOrd3_HTol_H312["MRI_zScore_FMO3_Bruss_HTol_H312"] = (data_Bruss_fastOrd3_HTol_H312["MRI_zScore_FMO3_Bruss_HTol_H312"] - allAvg_Bruss_fastOrd3_HTol_H312)/allStd_Bruss_fastOrd3_HTol_H312 
+data_Bruss_fastOrd3_HTol_H312["zScore"] = data_Bruss_fastOrd3_HTol_H312["MRIMethod"].map(methodAvg_Bruss_fastOrd3_HTol_H312)
+data_Bruss_fastOrd3_HTol_H312["zScore"] = (data_Bruss_fastOrd3_HTol_H312["zScore"] - allAvg_Bruss_fastOrd3_HTol_H312)/allStd_Bruss_fastOrd3_HTol_H312 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_HTol_H312["MRI_zScore_FMO3_Bruss_HTol_H312"] < -zscore_threshold,
-    data_Bruss_fastOrd3_HTol_H312["MRI_zScore_FMO3_Bruss_HTol_H312"] > zscore_threshold
+    data_Bruss_fastOrd3_HTol_H312["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_HTol_H312["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_HTol_H312["MRI_status_FMO3_Bruss_HTol_H312"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_HTol_H312["status"] = np.select(conditions, status, default="intermediate")
 
 
 #######################################################################################################################
@@ -257,16 +257,16 @@ allStd_Bruss_fastOrd3_Dec_H312= data_Bruss_fastOrd3_Dec_H312["AvgRank"].std()
 methodAvg_Bruss_fastOrd3_Dec_H312 = data_Bruss_fastOrd3_Dec_H312.groupby("MRIMethod")["AvgRank"].mean()
 
 # ------ Calculate the z-score of each method and store on each row corresponding to the method ----
-data_Bruss_fastOrd3_Dec_H312["MRI_zScore_FMO3_Bruss_Dec_H312"] = data_Bruss_fastOrd3_Dec_H312["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_H312)
-data_Bruss_fastOrd3_Dec_H312["MRI_zScore_FMO3_Bruss_Dec_H312"] = (data_Bruss_fastOrd3_Dec_H312["MRI_zScore_FMO3_Bruss_Dec_H312"] - allAvg_Bruss_fastOrd3_Dec_H312)/allStd_Bruss_fastOrd3_Dec_H312 
+data_Bruss_fastOrd3_Dec_H312["zScore"] = data_Bruss_fastOrd3_Dec_H312["MRIMethod"].map(methodAvg_Bruss_fastOrd3_Dec_H312)
+data_Bruss_fastOrd3_Dec_H312["zScore"] = (data_Bruss_fastOrd3_Dec_H312["zScore"] - allAvg_Bruss_fastOrd3_Dec_H312)/allStd_Bruss_fastOrd3_Dec_H312 
 
 # ----------------------------- Classify each method based on z-score ------------------------------------
 conditions = [
-    data_Bruss_fastOrd3_Dec_H312["MRI_zScore_FMO3_Bruss_Dec_H312"] < -zscore_threshold,
-    data_Bruss_fastOrd3_Dec_H312["MRI_zScore_FMO3_Bruss_Dec_H312"] > zscore_threshold
+    data_Bruss_fastOrd3_Dec_H312["zScore"] < -zscore_threshold,
+    data_Bruss_fastOrd3_Dec_H312["zScore"] > zscore_threshold
 ]
 
-data_Bruss_fastOrd3_Dec_H312["MRI_status_FMO3_Bruss_Dec_H312"] = np.select(conditions, status, default="intermediate")
+data_Bruss_fastOrd3_Dec_H312["status"] = np.select(conditions, status, default="intermediate")
 
 
 # ----------------------------------- Store all data in one excel file with multiple sheets ---------------------------------
@@ -285,6 +285,76 @@ with pd.ExcelWriter('allBruss_fastOrder3.xlsx') as writer:
 
     data_Bruss_fastOrd3_HTol_H312.to_excel(writer, sheet_name='data_Bruss_fastOrd3_HTol_H312', index=False)
     data_Bruss_fastOrd3_Dec_H312.to_excel(writer, sheet_name='data_Bruss_fastOrd3_Dec_H312', index=False)
+
+
+
+###############################################################################################################################
+# --------------------------------------- Compute the Average z-score of Each Method ------------------------------------------
+# load excel file
+filename = "allBruss_fastOrder3.xlsx"
+
+# load the sheetnames
+xls = pd.ExcelFile(filename)
+sheetNames = xls.sheet_names
+
+# store the zsores of each method across the different controllers
+ERK33a_zscores    = []
+ESDIRK34a_zscores = []
+MERK32_zscores    = []
+SR32_zscores      = []
+
+for sheet in sheetNames:
+    df = pd.read_excel(filename, sheet_name=sheet)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_MRI_GARK_ERK33a
+    ERK33a_values = df[df["MRIMethod"] == "ARKODE_MRI_GARK_ERK33a"]
+
+    # since the zscore values are the same just pick one
+    valueERK33a   = ERK33a_values["zScore"].iloc[0]
+    ERK33a_zscores.append(valueERK33a)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_MRI_GARK_ESDIRK34a
+    ESDIRK34a_values = df[df["MRIMethod"] == "ARKODE_MRI_GARK_ESDIRK34a"]
+
+    # since the zscore values are the same just pick one
+    valueESDIRK34a  = ESDIRK34a_values["zScore"].iloc[0]
+    ESDIRK34a_zscores.append(valueESDIRK34a)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_MERK32
+    MERK32_values = df[df["MRIMethod"] == "ARKODE_MERK32"]
+
+    # since the zscore values are the same just pick one
+    valueMERK32 = MERK32_values["zScore"].iloc[0]
+    MERK32_zscores.append(valueMERK32)
+
+    ###########################################################################
+    # Filter rows where MRIMethod is ARKODE_IMEX_MRI_SR32
+    SR32_values = df[df["MRIMethod"] == "ARKODE_IMEX_MRI_SR32"]
+
+    # since the zscore values are the same just pick one
+    valueSR32 = SR32_values["zScore"].iloc[0]
+    SR32_zscores.append(valueSR32)
+
+
+# compute the average zscores
+with open("AvgZscores_Bruss_fastOrd3.txt", "w") as file:
+    average_ERK33a = sum(ERK33a_zscores) / len(ERK33a_zscores)
+    file.write(f"Average zscore for ARKODE_MRI_GARK_ERK33a (fast Brusselator): {average_ERK33a}\n\n")
+
+    average_ESDIRK34a = sum(ESDIRK34a_zscores) / len(ESDIRK34a_zscores)
+    file.write(f"Average zscore for ARKODE_MRI_GARK_ESDIRK34a (fast Brusselator): {average_ESDIRK34a}\n\n")
+
+    average_MERK32 = sum(MERK32_zscores) / len(MERK32_zscores)
+    file.write(f"Average zscore for ARKODE_MERK32 (fast Brusselator): {average_MERK32}\n\n")
+
+    average_SR32  = sum(SR32_zscores) / len(SR32_zscores)
+    file.write(f"Average zscore for ARKODE_IMEX_MRI_SR32 (fast Brusselator): {average_SR32}\n\n")
+
+
+
 
 
 
