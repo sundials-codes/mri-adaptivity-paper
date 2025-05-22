@@ -9,6 +9,7 @@
 
 # imports
 
+import os
 import matplotlib.pyplot as plt
 import sys
 sys.path.append('..')
@@ -74,11 +75,13 @@ bruss_xlim_mid=[[1e2,1e4],[1e4,6e5],[1e2,1e4],[1e5,5e6]]
 bruss_xlim_hi=[[1e1,1e3],[1e4,1e6],[5e1,1e3],[1e4,1e7]]
 if Plot_KPR:
     putil.do_comparison_plots(KPR_fname, 'omega', [50, 500], r'$\omega$', Full_controllers,'All controller',
-                              'kpr-full',kpr_removed_pairs,'kpr_ranks',kpr_xlim_lo,kpr_xlim_mid,kpr_xlim_hi)
+                              'paper-kpr',kpr_removed_pairs,'kpr',kpr_xlim_lo,kpr_xlim_mid,kpr_xlim_hi)
 
 if Plot_Bruss:
     putil.do_comparison_plots(Bruss_fname, 'ep', [1.e-4, 1.e-5], r'$\epsilon$', Full_controllers, 'All controller',
-                              'bruss-full', bruss_removed_pairs,'bruss_ranks',bruss_xlim_lo,bruss_xlim_mid,bruss_xlim_hi)
+                              'paper-bruss', bruss_removed_pairs,'bruss',bruss_xlim_lo,bruss_xlim_mid,bruss_xlim_hi)
+    
+putil.combine()
 
 #print a list of all failed tests to stdout
 if Plot_KPR:
@@ -87,4 +90,4 @@ if Plot_Bruss:
    putil.print_failed_tests(Bruss_fname, 'Stiff Brusselator')
 
 ## display plots
-#plt.show()
+plt.show()

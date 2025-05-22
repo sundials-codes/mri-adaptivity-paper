@@ -8,7 +8,6 @@
 #------------------------------------------------------------
 
 # imports
-import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -19,6 +18,8 @@ plt.rc('font', size=15)
 plt.rcParams['figure.figsize'] = [7.2, 4.8]
 plt.rcParams['text.usetex'] = True
 plt.rcParams['figure.constrained_layout.use'] = True
+
+#--------------------------------------#
 
 # flags to turn on/off certain plots
 Generate_PDF = True
@@ -32,16 +33,6 @@ work_bbox = (0.57, 0.97)
 efficiency_figsize = (10,6)
 efficiency_bbox = (0.725, 0.975)
 
-# vertical axis limits
-#verification_accuracy_ylim = [1e-1, 1e7]
-#verification_work_slow_ylim = [1e2, 1e6]
-#verification_work_fast_ylim = [1e3, 1e7]
-#verification_failrate_ylim = [0, 0.5]
-
-#comparison_accuracy_ylim = [1e-1, 1e9]
-#comparison_work_slow_ylim = [1e1, 1e6]
-#comparison_work_fast_ylim = [1e2, 1e8]
-#comparison_failrate_ylim = [0, 0.5]
 
 # controllers to include in verification plots
 
@@ -75,6 +66,9 @@ method_order = {'ARKODE_MRI_GARK_RALSTON2': 2,
                'ARKODE_MRI_GARK_ESDIRK46a': 4,
                'ARKODE_IMEX_MRI_SR43': 4,
                'ARKODE_MERK54': 5,}
+
+
+
 
 cmap10 = plt.get_cmap('tab10')
 cmap20 = plt.get_cmap('tab20')
@@ -140,11 +134,10 @@ methodsymbol = {'ARKODE_MRI_GARK_RALSTON2': '.',
                'ARKODE_MRI_GARK_ESDIRK46a': "|",
                'ARKODE_IMEX_MRI_SR43': "$f$",
                'ARKODE_MERK54': "<",}
-
 methods_lo = ['ARKODE_MRI_GARK_RALSTON2', 'ARKODE_MRI_GARK_ERK22a', 'ARKODE_MRI_GARK_ERK22b', 'ARKODE_MERK21',
               'ARKODE_MRI_GARK_IRK21a', 'ARKODE_IMEX_MRI_SR21']
 methods_mid=['ARKODE_MRI_GARK_ERK33a', 'ARKODE_MERK32', 'ARKODE_MRI_GARK_ESDIRK34a', 'ARKODE_IMEX_MRI_SR32']
-methods_hi = [ 'ARKODE_MRI_GARK_ERK45a','ARKODE_MERK43', 'ARKODE_MRI_GARK_ESDIRK46a', 'ARKODE_IMEX_MRI_SR43', 'ARKODE_MERK54']
+methods_hi = ['ARKODE_MRI_GARK_ERK45a', 'ARKODE_MERK43', 'ARKODE_MRI_GARK_ESDIRK46a', 'ARKODE_IMEX_MRI_SR43', 'ARKODE_MERK54']
 
 controltext = {'MRICC': 'Hh-CC',
                'MRILL': 'Hh-LL',
@@ -191,7 +184,6 @@ def mname(method):
     pruned3 = [s for s in pruned2 if s != 'MRI']
     return " ".join(pruned3)
 
-
 def print_failed_tests(fname, prefix):
     data = pd.read_excel(fname)
     failed = data[data.ReturnCode != 0]
@@ -211,27 +203,7 @@ def filter_data(fname):
     merged = data.merge(bad_combos.drop_duplicates(), on=['control', 'mri_method'], how='left', indicator=True)
     clean = merged[merged['_merge'] == 'left_only'].drop(columns=['_merge'])
     return clean
-def combine():
-    probs = ['kpr', 'bruss']
-    methods = ['lo.xlsx', 'mid.xlsx', 'hi.xlsx']
-    import pandas as pd
-    import os
-    dfs = []
-    for prob in probs:
-        for method in methods:
-            filename = f"ranks_stats_{prob}-{method}"
-            df = pd.read_excel(filename)
-            dfs.append(df)
-            if os.path.exists(filename) and os.path.exists(prob+'-'+method):
-                os.remove(filename)
-                os.remove(prob+'-'+method)
-                
-            else:
-                print("The file does not exist")
 
-    combined = pd.concat(dfs, ignore_index=True)
-    combined.to_excel("rank_stats.xlsx", index=False)
-    
 def get_work(errorarr, workarr, errorval):
     """
     Given input arrays errorarr = [err0, err1, ..., errN] and workarr = [work0, work1, ..., workN],
@@ -248,8 +220,6 @@ def get_work(errorarr, workarr, errorval):
         return 1e20
 
     return 10**(np.interp(np.log10(errorval), np.log10(errorarr[::-1]), np.log10(workarr[::-1])))
-
-
 
 def compare_efficiency(data,param,metric, errorwindow=[1e-6,1e-2], nerr=20):
     """
@@ -354,7 +324,8 @@ def make_accuracy_comparison_plot(data, mratekey, mratevals, mratetxt,mri_method
                 # skip over failed tests
                 if check(control,mri_method,removed_pairs):
                     continue
-
+                mcolor = methodcolor[mri_method]
+                msymbol = controlsymbol[control]
                 # first multirate value
                 mrate = mratevals[0]
                 rtol = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['rtol'].array
@@ -362,8 +333,8 @@ def make_accuracy_comparison_plot(data, mratekey, mratevals, mratetxt,mri_method
                 accuracy_min1=np.minimum(accuracy_min1,accuracy)
                 accuracy_max1=np.maximum(accuracy_max1,accuracy)
                 # this plots the lines within the bands
-                #ax1.loglog(rtol, accuracy, marker=msymbol, color=mcolor, ls='-', markersize=10)
-                ax1.loglog()
+                ax1.loglog(rtol, accuracy, marker=msymbol, color=color[group], ls='-', markersize=10)
+                #ax1.loglog()
 
                 # second multirate value
                 mrate = mratevals[1]
@@ -372,11 +343,12 @@ def make_accuracy_comparison_plot(data, mratekey, mratevals, mratetxt,mri_method
                 accuracy_min2=np.minimum(accuracy_min2,accuracy)
                 accuracy_max2=np.maximum(accuracy_max2,accuracy)
 
-                #ax2.loglog(rtol, accuracy, marker=msymbol, color=mcolor, ls='-', markersize=10)
-                ax2.loglog()
+                ax2.loglog(rtol, accuracy, marker=msymbol, color=color[group], ls='-', markersize=10)
+                #ax2.loglog()
         ax1.fill_between(rtol, accuracy_min1, accuracy_max1, color=color[group], alpha=0.25,label=group)
         ax2.fill_between(rtol, accuracy_min2, accuracy_max2, color=color[group], alpha=0.25,label=group)
     handles, labels = ax1.get_legend_handles_labels()
+    fig.suptitle(picname + ' accuracy plot')
     ax1.set_xlabel(r'reltol')
     ax1.set_ylabel(r'accuracy '+ mratetxt + ' = ' + str(mratevals[0]))
     ax2.set_xlabel(r'reltol')
@@ -388,86 +360,9 @@ def make_accuracy_comparison_plot(data, mratekey, mratevals, mratetxt,mri_method
         plt.savefig(picname+" filled in" + '.png')
     if (Generate_PDF):
         plt.savefig(picname + " filled in"+'.pdf')
+        
 
-def make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, mri_methods, titletxt,rank_name):
-
-    comparison_data_slow1 = []
-    comparison_data_fast1 = []
-    comparison_data_slow2 = []
-    comparison_data_fast2 = []
-    Master_data=data
-    cut_off_rank=12
-    for control in controllers:
-        data=Master_data[Master_data['control'] == control]
-        for mri_method in mri_methods:
-
-            # first multirate value
-            mrate = mratevals[0]
-            rtol = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['rtol']
-            accuracy = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['Accuracy']
-            error = accuracy*rtol
-            slowsteps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['SlowSteps'].array
-            slowfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['SlowFails'].array
-            faststeps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastSteps'].array
-            fastfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastFails'].array
-            comparison_data_slow1.append({'method': mri_method+' + '+control, 'works': slowsteps+slowfails, 'errors': error})
-            comparison_data_fast1.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
-
-            # second multirate value
-            mrate = mratevals[1]
-            rtol = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['rtol']
-            accuracy = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['Accuracy']
-            error = accuracy*rtol
-            slowsteps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['SlowSteps'].array
-            slowfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['SlowFails'].array
-            faststeps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastSteps'].array
-            fastfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastFails'].array
-            comparison_data_slow2.append({'method': mri_method+' + '+control, 'works': slowsteps+slowfails, 'errors': error})
-            comparison_data_fast2.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
-
-    # output efficiency comparisons for both multirate values and for both slow/fast work
-    ranks_slow1 = compare_efficiency(comparison_data_slow1,mratevals[0],'slow')
-    ranks_slow1_loc=ranks_slow1.loc[ranks_slow1['AvgRank'] <= cut_off_rank, ['Controller', 'MRIMethod']]
-
-    print('For ', titletxt, ' and mrateval = ', mratevals[0], ' the slow efficiency method ranks are:')
-    print(ranks_slow1)
-
-    ranks_fast1 = compare_efficiency(comparison_data_fast1,mratevals[0],'fast')
-    ranks_fast1_loc=ranks_fast1.loc[ranks_fast1['AvgRank'] <= cut_off_rank, ['Controller', 'MRIMethod']]
-
-    print('For ', titletxt, ' and mrateval = ', mratevals[0], ' the fast efficiency method ranks are:')
-    print(ranks_fast1)
-
-    ranks_slow2 = compare_efficiency(comparison_data_slow2,mratevals[1],'slow')
-    ranks_slow2_loc=ranks_slow2.loc[ranks_slow2['AvgRank'] <= cut_off_rank, ['Controller', 'MRIMethod']]
-
-    print('For ', titletxt, ' and mrateval = ', mratevals[1], ' the slow efficiency method ranks are:')
-    print(ranks_slow2)
-
-    ranks_fast2 = compare_efficiency(comparison_data_fast2,mratevals[1],'fast')
-    ranks_fast2_loc=ranks_fast2.loc[ranks_fast2['AvgRank'] <= cut_off_rank, ['Controller', 'MRIMethod']]
-
-    print('For ', titletxt, ' and mrateval = ', mratevals[1], ' the fast efficiency method ranks are:')
-    print(ranks_fast2)
-
-    # keeps all pairs who attains a low rank for both mrate values
-    rankslow= pd.merge(ranks_slow1_loc,ranks_slow2_loc, on=['Controller', 'MRIMethod'], how='inner')
-    rankfast= pd.merge(ranks_fast1_loc,ranks_fast2_loc, on=['Controller', 'MRIMethod'], how='inner')
-    ranks=pd.concat([rankslow,rankfast]).drop_duplicates()
-
-
-    # keeps all pairs who attains a low rank any any mrate values
-    #ranks=pd.concat([ranks_slow1_loc,ranks_fast1_loc,ranks_slow2_loc,ranks_fast2_loc]).drop_duplicates()
-
-    ranks.to_excel(rank_name+'.xlsx',index=False)
-
-    # output statistic dataframe
-    ranks_stats_df=pd.concat([ranks_slow1,ranks_fast1,ranks_slow2,ranks_fast2])
-    ranks_stats_df.to_excel('ranks_stats_'+rank_name+'.xlsx',index=False)
-
-def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, controllers, mri_methods,rank_names,xlim1,xlim2,xlim3,xlim4):
-
-
+def make_efficiency_comparison_plot(data, mratekey, mratevals, mratetxt, controllers, mri_methods, titletxt, picname,removed_pairs,rank_name):
     fig = plt.figure(figsize=efficiency_figsize)
     gs = GridSpec(2, 3, figure=fig)
     ax1 = fig.add_subplot(gs[0,0])  # top-left
@@ -475,17 +370,16 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
     ax3 = fig.add_subplot(gs[1,0])  # bottom-left
     ax4 = fig.add_subplot(gs[1,1])  # bottom-middle
 
-    retained_pairs=pd.read_excel(rank_names+'.xlsx')
-    retained_pairs=list(retained_pairs.itertuples(index=False, name=None))
     comparison_data_slow1 = []
     comparison_data_fast1 = []
     comparison_data_slow2 = []
     comparison_data_fast2 = []
+    cut_off_rank=12
     Master_data=data
     for control in controllers:
         data=Master_data[Master_data['control'] == control]
         for mri_method in mri_methods:
-            if check(control,mri_method,retained_pairs,reverse=1):
+            if check(control,mri_method,removed_pairs):
                 continue
             ltext = mname(mri_method)+' + '+controltext[control]
             mcolor = methodcolor[mri_method]
@@ -520,32 +414,127 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
             comparison_data_fast2.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
 
     handles, labels = ax1.get_legend_handles_labels()
-   # fig.suptitle('top pairs' +rank_names+ ' efficiency')
+    fig.suptitle(titletxt + ' efficiency')
     ax3.set_xlabel(r'slow work')
     ax4.set_xlabel(r'fast work')
     ax1.set_ylabel(r'error, ' + mratetxt + ' = ' + str(mratevals[0]))
     ax3.set_ylabel(r'error, ' + mratetxt + ' = ' + str(mratevals[1]))
-
-    ax1.set_xlim(xlim1)
-    ax2.set_xlim(xlim2)
-    ax3.set_xlim(xlim3)
-    ax4.set_xlim(xlim4)
-
     ax1.grid(linestyle='--', linewidth=0.5)
     ax2.grid(linestyle='--', linewidth=0.5)
     ax3.grid(linestyle='--', linewidth=0.5)
     ax4.grid(linestyle='--', linewidth=0.5)
-
-
-
-
-    fig.legend(handles, labels, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox)
+    fig.legend(handles, labels, title='MRI Method', loc='upper left', bbox_to_anchor=efficiency_bbox)
     if (Generate_PNG):
-        plt.savefig('top_pairs'+rank_names + '.png')
+        plt.savefig(picname+'_all_controllers_efficiency' + '.png')
     if (Generate_PDF):
-        plt.savefig('paper-top_pairs_efficencies_'+rank_names + '.pdf')
+        plt.savefig(picname+'_all_controllers_efficiency' + '.pdf')
 
-def do_comparison_plots(fname, mratekey, mratevals, mratetxt,controllers, titletxt, picname,removed_pairs,rank_name,xlimlo,xlimmid,xlimhi):
+    # output efficiency comparisons for both multirate values and for both slow/fast work
+    ranks_slow1 = compare_efficiency(comparison_data_slow1,mratevals[0],'slow')
+    ranks_slow1_loc=ranks_slow1.loc[ranks_slow1['AvgRank'] <= 4, ['Controller', 'MRIMethod']]
+
+    print('For ', titletxt, ' and mrateval = ', mratevals[0], ' the slow efficiency method ranks are:')
+    print(ranks_slow1)
+
+    ranks_fast1 = compare_efficiency(comparison_data_fast1,mratevals[0],'fast')
+    ranks_fast1_loc=ranks_fast1.loc[ranks_fast1['AvgRank'] <= 4, ['Controller', 'MRIMethod']]
+    
+    print('For ', titletxt, ' and mrateval = ', mratevals[0], ' the fast efficiency method ranks are:')
+    print(ranks_fast1)
+
+    ranks_slow2 = compare_efficiency(comparison_data_slow2,mratevals[1],'slow')
+    ranks_slow2_loc=ranks_slow2.loc[ranks_slow2['AvgRank'] <= 4, ['Controller', 'MRIMethod']]
+
+    print('For ', titletxt, ' and mrateval = ', mratevals[1], ' the slow efficiency method ranks are:')
+    print(ranks_slow2)
+
+    ranks_fast2 = compare_efficiency(comparison_data_fast2,mratevals[1],'fast')
+    ranks_fast2_loc=ranks_fast2.loc[ranks_fast2['AvgRank'] <= 4, ['Controller', 'MRIMethod']]
+    
+    print('For ', titletxt, ' and mrateval = ', mratevals[1], ' the fast efficiency method ranks are:')
+    print(ranks_fast2)
+    
+    # keeps all pairs who attains a low rank for both mrate values
+    
+    rankslow= pd.merge(ranks_slow1_loc,ranks_slow2_loc, on=['Controller', 'MRIMethod'], how='inner')
+    rankfast= pd.merge(ranks_fast1_loc,ranks_fast2_loc, on=['Controller', 'MRIMethod'], how='inner')
+    ranks=pd.concat([rankslow,rankfast]).drop_duplicates()
+    
+    
+    # keeps all pairs who attains a low rank any any mrate values
+    #ranks=pd.concat([ranks_slow1_loc,ranks_fast1_loc,ranks_slow2_loc,ranks_fast2_loc]).drop_duplicates()
+    
+    ranks.to_excel(rank_name+'.xlsx',index=False)
+    
+def efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, controllers, mri_methods, titletxt, picname,removed_pairs,rank_name):
+    
+
+    fig = plt.figure(figsize=efficiency_figsize)
+    gs = GridSpec(2, 3, figure=fig)
+    ax1 = fig.add_subplot(gs[0,0])  # top-left
+    ax2 = fig.add_subplot(gs[0,1])  # top-middle
+    ax3 = fig.add_subplot(gs[1,0])  # bottom-left
+    ax4 = fig.add_subplot(gs[1,1])  # bottom-middle
+
+    comparison_data_slow1 = []
+    comparison_data_fast1 = []
+    comparison_data_slow2 = []
+    comparison_data_fast2 = []
+    Master_data=data
+    for control in controllers:
+        data=Master_data[Master_data['control'] == control]
+        for mri_method in mri_methods:
+            if check(control,mri_method,removed_pairs):
+                continue
+            ltext = mname(mri_method)+' + '+controltext[control]
+            mcolor = methodcolor[mri_method]
+            msymbol = controlsymbol[control]
+
+            # first multirate value
+            mrate = mratevals[0]
+            rtol = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['rtol']
+            accuracy = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['Accuracy']
+            error = accuracy*rtol
+            slowsteps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['SlowSteps'].array
+            slowfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['SlowFails'].array
+            faststeps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastSteps'].array
+            fastfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastFails'].array
+            ax1.loglog(slowsteps+slowfails, error, marker=msymbol, color=mcolor, ls='-', label=ltext, markersize=10)
+            ax2.loglog(faststeps+fastfails, error, marker=msymbol, color=mcolor, ls='-', label=ltext, markersize=10)
+            comparison_data_slow1.append({'method': mri_method+' + '+control, 'works': slowsteps+slowfails, 'errors': error})
+            comparison_data_fast1.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
+
+            # second multirate value
+            mrate = mratevals[1]
+            rtol = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['rtol']
+            accuracy = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['Accuracy']
+            error = accuracy*rtol
+            slowsteps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['SlowSteps'].array
+            slowfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['SlowFails'].array
+            faststeps = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastSteps'].array
+            fastfails = (data.groupby([mratekey,'mri_method']).get_group((mrate,mri_method)))['FastFails'].array
+            ax3.loglog(slowsteps+slowfails, error, marker=msymbol, color=mcolor, ls='-', label=ltext, markersize=10)
+            ax4.loglog(faststeps+fastfails, error, marker=msymbol, color=mcolor, ls='-', label=ltext, markersize=10)
+            comparison_data_slow2.append({'method': mri_method+' + '+control, 'works': slowsteps+slowfails, 'errors': error})
+            comparison_data_fast2.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
+
+    handles, labels = ax1.get_legend_handles_labels()
+    fig.suptitle(titletxt + ' efficiency')
+    ax3.set_xlabel(r'slow work')
+    ax4.set_xlabel(r'fast work')
+    ax1.set_ylabel(r'error, ' + mratetxt + ' = ' + str(mratevals[0]))
+    ax3.set_ylabel(r'error, ' + mratetxt + ' = ' + str(mratevals[1]))
+    ax1.grid(linestyle='--', linewidth=0.5)
+    ax2.grid(linestyle='--', linewidth=0.5)
+    ax3.grid(linestyle='--', linewidth=0.5)
+    ax4.grid(linestyle='--', linewidth=0.5)
+    fig.legend(handles, labels, title='MRI Method', loc='upper left', bbox_to_anchor=efficiency_bbox)
+    if (Generate_PNG):
+        plt.savefig(picname + '.png')
+    if (Generate_PDF):
+        plt.savefig(picname + '.pdf')
+
+def do_comparison_plots(fname, mratekey, mratevals, mratetxt,controllers, titletxt, picname,removed_pairs,rank_name,xlimlo,xlimmid,xlimhi,Hh,Htol,Decoupled):
 
     """
     Given a saved Pandas dataframe file with results, and strings containing the base
@@ -570,6 +559,7 @@ def do_comparison_plots(fname, mratekey, mratevals, mratetxt,controllers, titlet
    10. Constructs plots of the "computational efficieny" at both the slow and fast
        time scales for each 4th/5th order MRI method at each multirate value, and saves to disk
     """
+
     data = pd.read_excel(fname)
     #data = filter_data(fname)
     # verify that there are only 2 mrate values
@@ -582,10 +572,19 @@ def do_comparison_plots(fname, mratekey, mratevals, mratetxt,controllers, titlet
     make_accuracy_comparison_plot(data, mratekey, mratevals, mratetxt, methods_hi, picname+'-accuracy-hi',removed_pairs)
 
     # efficiency plots
-    make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, methods_lo,  titletxt, rank_name+'-lo')
-    make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, methods_mid, titletxt, rank_name+'-mid')
-    make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, methods_hi,  titletxt,rank_name+'-hi')
+    make_efficiency_comparison_plot(data, mratekey, mratevals, mratetxt, controllers, methods_lo,  titletxt, picname,removed_pairs,rank_name+'-lo')
+    make_efficiency_comparison_plot(data, mratekey, mratevals, mratetxt, controllers, methods_mid,  titletxt, picname,removed_pairs,rank_name+'-mid')
+    make_efficiency_comparison_plot(data, mratekey, mratevals, mratetxt, controllers, methods_hi,  titletxt, picname,removed_pairs,rank_name+'-hi')
+   
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Hh, methods_lo,   'Hh controller ',picname+'_Hh_efficiency', removed_pairs,rank_name+'-lo')
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Hh, methods_mid, 'Hh controller',picname+'_Hh_efficiency',removed_pairs,rank_name+'-mid')
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Hh, methods_hi,  'Hh controller',picname+'_Hh_efficiency', removed_pairs,rank_name+'-hi')
+    
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Htol, methods_lo,'Htol controller',picname+'_Htol_efficiency',removed_pairs,rank_name+'-lo')
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Htol, methods_mid,'Htol controller',picname+'_Htol_efficiency',removed_pairs,rank_name+'-mid')
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Htol, methods_hi, 'Htol controller',picname+'_Htol_efficiency',removed_pairs,rank_name+'-hi')
+    
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Decoupled, methods_lo, 'Decoupled controller',picname+'_Decoupled_efficiency',removed_pairs,rank_name+'-lo')
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Decoupled, methods_mid, 'Decoupled controller',picname+'_Decoupled_efficiency',removed_pairs,rank_name+'-mid')
+    efficiency_comparison_plot_one_controller(data, mratekey, mratevals, mratetxt, Decoupled, methods_hi, 'Decoupled controller',picname+'_Decoupled_efficiency',removed_pairs,rank_name+'-hi')
 
-    best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt,controllers, methods_lo, rank_name+'-lo',xlimlo[0],xlimlo[1],xlimlo[2],xlimlo[3])
-    best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt,controllers, methods_mid,rank_name+'-mid',xlimmid[0],xlimmid[1],xlimmid[2],xlimmid[3])
-    best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, controllers, methods_hi,rank_name+'-hi',xlimhi[0],xlimhi[1],xlimhi[2],xlimhi[3])

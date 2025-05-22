@@ -243,12 +243,18 @@ To run the tests that assess the quality of various combinations of embedded MRI
   ./run_mriadapt_tests.py
 ```
 
-Note that this script runs 4200 different test combinations, and so it can take a few minutes to complete.  We also note that some of these combinations will fail (particularly for the stiff Brusselator problem), causing error messages to print to the screen.
+Note that this script runs 4200 different test combinations, and so it can take some time to complete.  We also note that some of these combinations will fail (particularly for the stiff Brusselator problem), causing error messages to print to the screen.
 
-To generate the corresponding plots once these tests complete:
+To generate the corresponding plots from the paper once these tests complete:
 
 ```bash
   ./plot_mriadapt.py
+```
+
+Run this line to generate extras plots that do not show up in the paper:
+
+```bash
+  ./plot_mriadapt_extras.py
 ```
 
 ### Nested MRI tests
