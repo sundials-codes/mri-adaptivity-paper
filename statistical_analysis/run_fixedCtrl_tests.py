@@ -32,7 +32,7 @@ zscore_threshold = 1.0
 
 status      = ["best", "worse"] # Classification of Methods / Controllers 
 controller  = ["MRIHTol-I", "MRIHTol-H0321", "MRIHTol-H0211", "MRIHTol-H211", "MRIHTol-H312", "MRIDec-I", "MRIDec-H0321", "MRIDec-H0211", "MRIDec-H211", "MRIDec-H312"]
-order       = {"Order2":[2], "Order3":[3], "Order4":[4,5]}
+order       = {"Order2":[2], "Order3":[3], "Order4&5":[4,5]}
 params      = {"Brusselator":[0.0001, 0.00001], "KPR":[50,500]}
 metric      = {"fast", "slow"}
 
@@ -67,13 +67,13 @@ for mt in metric:
         for prb_key, prb_val in params.items():
 
             # excel file containing the results for all methods, for a particular test problem, metric and controller
-            fileName  = f"{prb_key[0]}_{mt}{ord_key[0]}{ord_key[-1]}.xlsx"
+            fileName  = f"{prb_key[0]}_{mt}{ord_key[0]}{ord_key[5:]}.xlsx"
 
             # worksheets in the excel file corresponding to a particular controller 
             with pd.ExcelWriter(fileName) as writer:
                 for ctrl in controller:
                     data = fixedCtrl_tests(df, prb_val, mt, ord_val, ctrl, status, zscore_threshold)
-                    sheetName = f"{prb_key[0]}_{mt}{ord_key[0]}{ord_key[-1]}_{ctrl}"
+                    sheetName = f"{prb_key[0]}_{mt}{ord_key[0]}{ord_key[5:]}_{ctrl}"
                     data.to_excel(writer, sheet_name=sheetName, index=False)
 
             # compute the average z-score of each MRI method across all controllers or across each worksheet
@@ -82,7 +82,7 @@ for mt in metric:
 
             MRI_methods = {"Order2":["ARKODE_MRI_GARK_ERK22b", "ARKODE_MRI_GARK_IRK21a", "ARKODE_MRI_GARK_RALSTON2", "ARKODE_MRI_GARK_ERK22a", "ARKODE_MERK21", "ARKODE_IMEX_MRI_SR21"],
                            "Order3":["ARKODE_MRI_GARK_ERK33a", "ARKODE_MRI_GARK_ESDIRK34a", "ARKODE_MERK32", "ARKODE_IMEX_MRI_SR32"],
-                           "Order4":["ARKODE_MRI_GARK_ERK45a", "ARKODE_MERK43", "ARKODE_MERK54", "ARKODE_IMEX_MRI_SR43", "ARKODE_MRI_GARK_ESDIRK46a"]}[ord_key]
+                           "Order4&5":["ARKODE_MRI_GARK_ERK45a", "ARKODE_MERK43", "ARKODE_MERK54", "ARKODE_IMEX_MRI_SR43", "ARKODE_MRI_GARK_ESDIRK46a"]}[ord_key]
             
             # create empty lists to store the z-scores of each MRI method 
             method_zscores = {method: [] for method in MRI_methods}
@@ -95,7 +95,7 @@ for mt in metric:
                     method_zscores[method].append(zScore)
             
             # compute the average zscores
-            textFileName = f"AvgZscores_{prb_key[0]}_{mt}{ord_key[0]}{ord_key[-1]}.txt"
+            textFileName = f"AvgZscores_{prb_key[0]}_{mt}{ord_key[0]}{ord_key[5:]}.txt"
             with open(textFileName, "w") as file:
                 file.write(f"********************************************************************************************** \n")
                 file.write(f"Below are the average z-scores for all the {ord_key} methods across all controllers for the {prb_key} test, for the {mt} time scale. \n")

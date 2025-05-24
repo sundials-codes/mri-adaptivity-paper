@@ -2,6 +2,12 @@
 #
 # This script generates excel files and text files for all tests (stiff Brusselator and KPR), controllers and MRI methods. 
 
+echo -e "Running repeated measures ANOVA for all MRI methods of a particular order\n"
+python run_repreatedM_ANOVA.py
+
+echo -e "Running One-Way ANOVA for all controllers\n"
+python run_oneWayANOVA_ctrl.py
+
 echo -e "Running statistical analysis for Brusselator and KPR, for all MRI methods with a fixed controller \n"
 python run_fixedCtrl_tests.py
 

@@ -36,7 +36,7 @@ params         = {"Brusselator":[0.0001, 0.00001], "KPR":[50,500]}
 ctrl_to_remove = ['MRIPI', 'MRIPID', 'MRICC', 'MRILL'] #Remove the H-h controllers
 MRIMethod      = {"Order2":["ARKODE_MRI_GARK_ERK22b", "ARKODE_MRI_GARK_IRK21a", "ARKODE_MRI_GARK_RALSTON2", "ARKODE_MRI_GARK_ERK22a", "ARKODE_MERK21", "ARKODE_IMEX_MRI_SR21"],
                   "Order3":["ARKODE_MRI_GARK_ERK33a", "ARKODE_MRI_GARK_ESDIRK34a", "ARKODE_MERK32", "ARKODE_IMEX_MRI_SR32"],
-                  "Order4":["ARKODE_MRI_GARK_ERK45a", "ARKODE_MERK43", "ARKODE_MERK54", "ARKODE_IMEX_MRI_SR43", "ARKODE_MRI_GARK_ESDIRK46a"]}
+                  "Order4&5":["ARKODE_MRI_GARK_ERK45a", "ARKODE_MERK43", "ARKODE_MERK54", "ARKODE_IMEX_MRI_SR43", "ARKODE_MRI_GARK_ESDIRK46a"]}
 
 def fixedCtrl_tests(df, params, method_ord, ctrl_to_remove, status, zscore_threshold):
     
@@ -66,13 +66,13 @@ for prb_key, prb_val in params.items():
      for mriM_key, mriM_val in MRIMethod.items():
       
         # excel file containing the results for all controllers, for a particular test problem, metric and method
-        fileName  = f"{prb_key[0]}_{mriM_key[0]}{mriM_key[-1]}_controllers.xlsx"
+        fileName  = f"{prb_key[0]}_{mriM_key[0]}{mriM_key[5:]}_controllers.xlsx"
              
         # worksheets in the excel file corresponding to a particular method 
         with pd.ExcelWriter(fileName) as writer:
             for mriM_part in mriM_val:
                 data = fixedCtrl_tests(df, prb_val, mriM_part, ctrl_to_remove, status, zscore_threshold)
-                sheetName = f"{prb_key[0]}_{mriM_key[0]}{mriM_key[-1]}_{mriM_part.split('_')[-1]}"
+                sheetName = f"{prb_key[0]}_{mriM_key[0]}{mriM_key[5:]}_{mriM_part.split('_')[-1]}"
                 data.to_excel(writer, sheet_name=sheetName, index=False)
 
         # compute the average z-score of each controller or across each worksheet
@@ -92,7 +92,7 @@ for prb_key, prb_val in params.items():
                 ctrl_zscores[ctrl].append(zScore)
             
         # compute the average zscores
-        textFileName = f"AvgZscores_{prb_key}_{mriM_key[0]}{mriM_key[-1]}.txt"
+        textFileName = f"AvgZscores_{prb_key}_{mriM_key[0]}{mriM_key[5:]}.txt"
         with open(textFileName, "w") as file:
                 file.write(f"********************************************************************************************** \n")
                 file.write(f"Below are the average z-scores for the various controllers, for {mriM_key} methods, for the {prb_key} test. \n")
