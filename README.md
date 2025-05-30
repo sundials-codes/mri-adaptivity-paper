@@ -50,8 +50,7 @@ This should build multiple versions of SUNDIALS and various test codes.  You may
   ark_test_slowerror_kpr
 ```
 
-If these were built successfully, you may skip directly to the section "Running tests" below.
-
+If these were built successfully, you may skip directly to the [Running tests section below](#running-tests).
 
 ### Building the Dependencies
 
