@@ -80,7 +80,7 @@ if Plot_KPR:
 if Plot_Bruss:
     putil.do_comparison_plots(Bruss_fname, 'ep', [1.e-4, 1.e-5], r'$\epsilon$', Full_controllers, 'All controller',
                               'paper-bruss', bruss_removed_pairs,'bruss',bruss_xlim_lo,bruss_xlim_mid,bruss_xlim_hi)
-    
+
 putil.combine()
 
 #print a list of all failed tests to stdout
@@ -90,4 +90,4 @@ if Plot_Bruss:
    putil.print_failed_tests(Bruss_fname, 'Stiff Brusselator')
 
 ## display plots
-plt.show()
+#plt.show()
