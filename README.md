@@ -190,7 +190,7 @@ All tests and plotting utilities are organized into Python scripts.  The full se
   bash ./run-all-tests.sh
 ```
 
-and when that completes, the full set of plots cna be generated with the single shell script
+and when that completes, the full set of plots can be generated with the single shell script
 
 ```bash
   bash ./make-all-plots.sh
