@@ -284,7 +284,7 @@ To generate the corresponding plots once these tests complete:
 To run the full suite of statistical analyses across all controllers, MRI methods, and test problems:
 
 ```bash
-  bash ./run-all-statsTests.py
+  bash ./run-all-statsTests.sh
 ```
 
 This script runs the following individual statistical analysis modules:
