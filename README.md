@@ -290,48 +290,48 @@ To run the full suite of statistical analyses across all controllers, MRI method
 This script runs the following individual statistical analysis modules:
 
 ```bash
-  ./runStats_repeatedM_ANOVA.py
+  python3 ./runStats_repeatedM_ANOVA.py
 ```
 - Performs a Repeated Measures ANOVA for all MRI methods across all controllers and test problems, for both fast and slow time scales. It determines whether there is a statistically significant difference between the MRI methods.
 
 
 ```bash
-  ./runStats_oneWayANOVA_ctrl.py
+  python3 ./runStats_oneWayANOVA_ctrl.py
 ```
 - Performs a One-Way ANOVA for all controllers, across all MRI methods and test problems. It determines whether there is a statistically significant difference between the controllers.
 
 
 ```bash
-  ./runStats_fixedCtrl_tests.py
+  python3 ./runStats_fixedCtrl_tests.py
 ```
 - Performs statistical analysis for the stiff Brusselator and KPR test problems, using a fixed controller across all MRI methods.
 
 
 ```bash
-  ./runStats_fixedMethod_tests.py
+  python3 ./runStats_fixedMethod_tests.py
 ```
 - Performs statistical analysis for the stiff Brusselator and KPR test problems, using a fixed MRI method across all controllers.
 
 
 ```bash
-  ./runStats_fixedCtrl_Indep_tests.py
+  python3 ./runStats_fixedCtrl_Indep_tests.py
 ```
 - Performs statistical analysis for all MRI methods using a fixed controller, across all test problems.
 
 
 ```bash
-  ./runStats_fixedMethod_Indep_tests.py
+  python3 ./runStats_fixedMethod_Indep_tests.py
 ```
 - Performs statistical analysis for all controllers using a fixed MRI method, across all test problems.
 
 
 ```bash
-  ./runStats_allCtrls.py
+  python3 ./runStats_allCtrls.py
 ```
 - Performs statistical analysis for all controllers on both the Brusselator and KPR test problems.
 
 
 ```bash
-  ./runStats_hTol_dec_ctrl.py
+  python3 ./runStats_hTol_dec_ctrl.py
 ```
 - Performs statistical analysis for all HTol and Decoupled controllers on the Brusselator and KPR test problems.
