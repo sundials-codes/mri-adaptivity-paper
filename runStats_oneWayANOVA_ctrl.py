@@ -12,16 +12,17 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # SUNDIALS Copyright End
 # ------------------------------------------------------------------------------
-# This script returns the results of a One-Way ANOVA indicating whether there is 
-# a statistically significant difference between the controllers across all methods 
-# and test problems.
+# README
+#
+# This script performs a One-Way ANOVA to determine whether there are statistically 
+# significant differences between controllers, evaluated across all MRI methods and 
+# test problems, regardless of whether the time scale is fast or slow.
 # ------------------------------------------------------------------------------
 
 # Import library 
 import numpy as np 
 import pandas as pd 
 from scipy import stats
-from statsmodels.stats.anova import AnovaRM 
 
 
 # ------------------------------------------ Load your excel file --------------------------------------------

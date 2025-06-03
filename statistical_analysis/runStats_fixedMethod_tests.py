@@ -11,13 +11,16 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 # SUNDIALS Copyright End
-# ------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------
-# This script calculates the z-scores for all controllers (except H-h controllers), for a particluar MRI method, 
-# across both fast and slow time scales, for the stiff Brusselator and KPR test problems.
-# The results are saved in an an excel file labelled as "first_letter_of_the_test_problem"_metric_O"methodOrder_controllers.xlsx"
-# Each excel file contains worksheets and each worksheet contains the z-scores of all the controllers for a particular MRI method.
-# The average z-score of each controller is then calculated and the results are saved in text files.
+# README
+#
+# This script computes z-scores for all controllers (except H-h controllers) for a given MRI method of a specific order, 
+# evaluated across different time scales (fast and slow), for two test problems: the stiff Brusselator and KPR.
+#
+# Output:
+#        - Results are saved in an Excel file named using the format: "<first_letter_of_test_problem>_O<methodOrder>_controllers.xlsx".
+#        - Each Excel file contains separate worksheets, one for each MRI method of the specified order, with z-scores of all controllers.
+#        - The average z-score of each controller across all MRI methods of teh specified order is computed and saved in separate text files.
 # --------------------------------------------------------------------------------------------------------------------------
 
 
@@ -75,7 +78,7 @@ for prb_key, prb_val in params.items():
                 sheetName = f"{prb_key[0]}_{mriM_key[0]}{mriM_key[5:]}_{mriM_part.split('_')[-1]}"
                 data.to_excel(writer, sheet_name=sheetName, index=False)
 
-        # compute the average z-score of each controller or across each worksheet
+        # compute the average z-score of each controller across the worksheets
         xls = pd.ExcelFile(fileName)
         sheetNames = xls.sheet_names
 
@@ -97,7 +100,7 @@ for prb_key, prb_val in params.items():
                 file.write(f"********************************************************************************************** \n")
                 file.write(f"Below are the average z-scores for the various controllers, for {mriM_key} methods, for the {prb_key} test. \n")
                 file.write(f"********************************************************************************************** \n\n")
-                file.write(f"{'Method':50} | Average z-score\n")
+                file.write(f"{'Controller':50} | Average z-score\n")
                 file.write(f"{'-'*75}\n")
                 for ctrl in controllers:
                     zScoreList = ctrl_zscores[ctrl]

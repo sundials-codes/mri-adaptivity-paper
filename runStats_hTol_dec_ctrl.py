@@ -13,11 +13,15 @@
 # SUNDIALS Copyright End
 # ------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------
-# This script calculates the z-scores for all HTol and Decoupled controllers (except H-h controllers), across all metric, test problems and methods.
-# The results are saved in an an excel file labelled as "htol_dec_controllers.xlsx"
-# The z-scores are the same for all HTol controllers.
-# Likewise, the z-scores are the same for all decoupled controllers.
-# The z-score of each controller type is saved to the text file "zScores_HTol_Dec.txt".
+# README
+#
+# This script calculates the z-scores for all HTol and Decoupled controllers (excluding H-h controllers), 
+# aggregated across all MRI methods, test problems (stiff Brusselator and KPR), and time scales (fast and slow).
+#
+# Output:
+#        - Results are saved in an Excel file named: "htol_dec_controllers.xlsx"
+#        - The z-scores are identical for all HTol controllers and likewise identical across all Decoupled controllers.
+#        - The final z-scores for each controller type are also saved to a text file: "zScores_HTol_Dec.txt"
 # --------------------------------------------------------------------------------------------------------------------------
 
 
@@ -62,8 +66,8 @@ select_data = final_data[(final_data["Controller"] == "MRIDec-I")]
 Dec_zScore = select_data["zScore"].iloc[0] #the zscores are the same for all Decoupled controllers so just choose one
 
 with open("zScores_HTol_Dec.txt", "w") as file:
-    file.write(f"The zscore for the MRIHTol controllers is: {HTol_zScore}\n\n")
-    file.write(f"The zscore for the MRIDec controllers is: {Dec_zScore}\n\n")
+    file.write(f"The z-score for the MRIHTol controllers is: {HTol_zScore}\n\n")
+    file.write(f"The z-score for the MRIDec controllers is: {Dec_zScore}\n\n")
 
 
 

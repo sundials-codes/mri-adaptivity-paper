@@ -12,9 +12,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # SUNDIALS Copyright End
 # ---------------------------------------------------------------------------------------------
-# This script returns the results of a Repeated Measures ANOVA indicating whether there is a
-# statistically significant difference between the MRI methods of a particular order across all 
-# controllers and test problems, for fast and slow time scales.
+# README
+#
+# This script performs a Repeated Measures ANOVA to determine whether there are statistically 
+# significant differences between MRI methods of a specific order, evaluated across all controllers 
+# and test problems, for both fast and slow time scales.
 # ----------------------------------------------------------------------------------------------
 
 # Import library 

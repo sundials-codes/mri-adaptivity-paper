@@ -12,12 +12,17 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # SUNDIALS Copyright End
 # --------------------------------------------------------------------------------------------------------------------------------------------------
-# This script calculates the z-scores for all MRI methods of a specific order and controller (except H-h controllers), 
-# across both fast and slow time scales, for the stiff Brusselator and KPR test problems.
-# The results are saved in an an excel file labelled as "first_letter_of_the_test_problem"_metric_O"methodOrder.xlsx"
-# Each excel file contains worksheets and each worksheet contains the z-scores of all the MRI methods (of a particular order)
-# for a particular controller.
-# The average z-score of each MRI method across all controllers (except H-h controllers) is then calculated and the results are saved in text files.
+# README
+#
+# This script computes z-scores for all MRI methods of a specified order, evaluated across the various controllers 
+# (excluding H-h controllers) and time scales (fast and slow), for two test problems: the stiff Brusselator 
+# and KPR.
+#
+# Output:
+#        - Results are saved in an Excel file named using the format: "<first_letter_of_test_problem>_metricO<methodOrder>.xlsx".
+#        - Each Excel file contains separate worksheets, one for each controller, with z-scores of all MRI methods 
+#          of the given order.
+#        - The average z-score of each MRI method across all controllers is computed and saved in separate text files.
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 import pandas as pd

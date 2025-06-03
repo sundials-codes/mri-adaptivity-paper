@@ -12,12 +12,17 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # SUNDIALS Copyright End
 # --------------------------------------------------------------------------------------------------------------------------------------------------
-# This script calculates the z-scores for all MRI methods of a specific order and controller (except H-h controllers), 
-# across both fast and slow time scales, and test problems (or independent of test problems).
-# The results are saved in an an excel file labelled as "first_letter_of_the_test_problem"_metric_O"methodOrder.xlsx"
-# Each excel file contains worksheets and each worksheet contains the z-scores of all the MRI methods (of a particular order)
-# for a particular controller.
-# The average z-score of each MRI method across all controllers (except H-h controllers) is then calculated and the results are saved in text files.
+# README
+#
+# This script computes z-scores for all MRI methods of a specified order, evaluated across the various controllers 
+# (excluding H-h controllers) and time scales (fast and slow), for two test problems: the stiff Brusselator 
+# and KPR.
+#
+# Output:
+#        - Results are saved in an Excel file named using the format: "<first_letter_of_test_problem>_metricO<methodOrder>.xlsx".
+#        - Each Excel file contains separate worksheets, one for each controller, with z-scores of all MRI methods 
+#          of the given order.
+#        - The average z-score of each MRI method across all controllers is computed and saved in separate text files.
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 import pandas as pd
@@ -33,13 +38,14 @@ zscore_threshold = 1.0
 status      = ["best", "worse"] # Classification of Methods / Controllers 
 controller  = ["MRIHTol-I", "MRIHTol-H0321", "MRIHTol-H0211", "MRIHTol-H211", "MRIHTol-H312", "MRIDec-I", "MRIDec-H0321", "MRIDec-H0211", "MRIDec-H211", "MRIDec-H312"]
 order       = {"Order2":[2], "Order3":[3], "Order4&5":[4,5]}
+params      = {"Brusselator":[0.0001, 0.00001], "KPR":[50,500]}
 metric      = {"fast", "slow"}
 
 
-def fixedCtrl_tests(df, metric, order, controller, status, zscore_threshold):
+def fixedCtrl_tests(df, params, metric, order, controller, status, zscore_threshold):
     
     # filter the data you want
-    data = df[(df["order"].isin(order)) & (df["metric"] == metric) &
+    data = df[(df["order"].isin(order)) & (df["metric"] == metric) & (df["Param"].isin(params)) & 
              (df["Controller"] == controller)][["metric", "order", "Param", "MRIMethod", "Controller", "AvgRank"]]
     
     #calculate the mean and standard deviation
@@ -63,14 +69,16 @@ def fixedCtrl_tests(df, metric, order, controller, status, zscore_threshold):
 df = pd.read_excel("rank_stats.xlsx")
 for mt in metric:
     for ord_key, ord_val in order.items():
+        for prb_key, prb_val in params.items():
+
             # excel file containing the results for all methods, for a particular test problem, metric and controller
-            fileName  = f"{mt}{ord_key[0]}{ord_key[5:]}.xlsx"
+            fileName  = f"{prb_key[0]}_{mt}{ord_key[0]}{ord_key[5:]}.xlsx"
 
             # worksheets in the excel file corresponding to a particular controller 
             with pd.ExcelWriter(fileName) as writer:
                 for ctrl in controller:
-                    data = fixedCtrl_tests(df, mt, ord_val, ctrl, status, zscore_threshold)
-                    sheetName = f"{mt}{ord_key[0]}{ord_key[5:]}_{ctrl}"
+                    data = fixedCtrl_tests(df, prb_val, mt, ord_val, ctrl, status, zscore_threshold)
+                    sheetName = f"{prb_key[0]}_{mt}{ord_key[0]}{ord_key[5:]}_{ctrl}"
                     data.to_excel(writer, sheet_name=sheetName, index=False)
 
             # compute the average z-score of each MRI method across all controllers or across each worksheet
@@ -92,10 +100,10 @@ for mt in metric:
                     method_zscores[method].append(zScore)
             
             # compute the average zscores
-            textFileName = f"AvgZscores_{mt}{ord_key[0]}{ord_key[5:]}.txt"
+            textFileName = f"AvgZscores_{prb_key[0]}_{mt}{ord_key[0]}{ord_key[5:]}.txt"
             with open(textFileName, "w") as file:
                 file.write(f"********************************************************************************************** \n")
-                file.write(f"Below are the average z-scores for all the {ord_key} methods across all controllers for the {mt} time scale. \n")
+                file.write(f"Below are the average z-scores for all the {ord_key} methods across all controllers for the {prb_key} test, for the {mt} time scale. \n")
                 file.write(f"********************************************************************************************** \n\n")
                 file.write(f"{'Method':50} | Average z-score\n")
                 file.write(f"{'-'*75}\n")
