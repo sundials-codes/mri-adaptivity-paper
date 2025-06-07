@@ -50,7 +50,13 @@ This should build multiple versions of SUNDIALS and various test codes.  You may
   ark_test_slowerror_kpr
 ```
 
-If these were built successfully, you may skip directly to the [Running tests section below](#running-tests).
+If these were built successfully, you should "activate" the newly-constructed Python virtual environment,
+
+```bash
+source .venv/bin/activate
+```
+
+You cna then skip directly to the [Running tests section below](#running-tests).
 
 ### Building the Dependencies
 
@@ -195,6 +201,8 @@ and when that completes, the full set of plots can be generated with the single 
 ```bash
   bash ./make-all-plots.sh
 ```
+
+If these finish successfully, you may skip directly to the [Analyzing results section below](#analyzing-results).
 
 The remainder of this section provides instructions for running individual tests and generating the corresponding plots.
 
