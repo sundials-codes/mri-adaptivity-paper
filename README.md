@@ -56,7 +56,7 @@ If these were built successfully, you should "activate" the newly-constructed Py
 source .venv/bin/activate
 ```
 
-You cna then skip directly to the [Running tests section below](#running-tests).
+You can then skip directly to the [Running tests section below](#running-tests).
 
 ### Building the Dependencies
 
