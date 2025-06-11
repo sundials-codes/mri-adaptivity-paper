@@ -23,6 +23,9 @@ Generate_stats_plots = True
 Generate_PDF = True
 Generate_PNG = False
 
+plotorders = [2,3,4]
+orderstyles = {2: '-', 3: '--', 4: '-.', 5: ':'}
+
 accsymbol = {'Additive': 'o',
              'Average': 's',
              'Double-Step': '^',
@@ -125,7 +128,7 @@ def compile_stats(adaptive_df, fixedstep_df):
     for acc in adaptive_df['accumulator'].sort_values().unique():
         for RK in adaptive_df['RK'].sort_values().unique():
             for rtol in adaptive_df['rtol'].sort_values().unique():
-                for order in (adaptive_df.groupby(['RK']).get_group((RK)))['order'].sort_values().unique():
+                for order in (adaptive_df.groupby(['RK']).get_group((RK,)))['order'].sort_values().unique():
                     dsm = (adaptive_df.groupby(['rtol','RK','order','accumulator']).get_group((rtol,RK,order,acc)))['dsm']
                     dsm_est = (adaptive_df.groupby(['rtol','RK','order','accumulator']).get_group((rtol,RK,order,acc)))['dsm_est']
                     nsteps = (adaptive_df.groupby(['rtol','RK','order','accumulator']).get_group((rtol,RK,order,acc)))['nsteps']
@@ -151,8 +154,8 @@ def compile_stats(adaptive_df, fixedstep_df):
     steps = []
     for acc in fixedstep_df['accumulator'].sort_values().unique():
         for RK in fixedstep_df['RK'].sort_values().unique():
-            for h in (fixedstep_df.groupby(['RK']).get_group((RK)))['h'].sort_values().unique():
-                for order in (fixedstep_df.groupby(['RK']).get_group((RK)))['order'].sort_values().unique():
+            for h in (fixedstep_df.groupby(['RK']).get_group((RK,)))['h'].sort_values().unique():
+                for order in (fixedstep_df.groupby(['RK']).get_group((RK,)))['order'].sort_values().unique():
                     dsm = (fixedstep_df.groupby(['h','RK','order','accumulator']).get_group((h,RK,order,acc)))['dsm']
                     dsm_est = (fixedstep_df.groupby(['h','RK','order','accumulator']).get_group((h,RK,order,acc)))['dsm_est']
                     nsteps = (fixedstep_df.groupby(['h','RK','order','accumulator']).get_group((h,RK,order,acc)))['nsteps']
@@ -234,10 +237,14 @@ if (Generate_stats_plots):
     for acc in kpr_adaptive_stats['accumulator'].sort_values().unique():
         RK = 'ERK'
         #for RK in kpr_adaptive_stats['RK'].sort_values().unique():
-        rtol   = (kpr_adaptive_stats.groupby(['order','RK','accumulator']).get_group((3,RK,acc)))['rtol']
-        gmeans = (kpr_adaptive_stats.groupby(['order','RK','accumulator']).get_group((3,RK,acc)))['gmean']
-        labeltxt = '{0:1}'.format(acc)
-        plt.loglog(rtol, gmeans, label=labeltxt, marker=accsymbol[acc], color=acccolor[acc], linestyle=RKlines[RK])
+        for order in plotorders:
+            rtol   = (kpr_adaptive_stats.groupby(['order','RK','accumulator']).get_group((order,RK,acc)))['rtol']
+            gmeans = (kpr_adaptive_stats.groupby(['order','RK','accumulator']).get_group((order,RK,acc)))['gmean']
+            if (len(plotorders) > 1):
+                labeltxt = '{0:1}'.format(acc) + ' (order {0:d})'.format(order)
+            else:
+                labeltxt = '{0:1}'.format(acc)
+            plt.loglog(rtol, gmeans, label=labeltxt, marker=accsymbol[acc], color=acccolor[acc], linestyle=orderstyles[order])
     plt.xlabel('rtol')
     plt.ylabel(r'$\varepsilon^f_{ref}/\varepsilon^f_{approx}$ (geom. mean)')
     plt.title("Adaptive-step KPR")
@@ -246,19 +253,23 @@ if (Generate_stats_plots):
     plt.grid(linestyle='--', linewidth=0.5)
 
     if (Generate_PNG):
-        plt.savefig('3rd order kpr-ratio-adaptive-stats.png')
+        plt.savefig('kpr-ratio-adaptive-stats.png')
     if (Generate_PDF):
-        plt.savefig('3rd order kpr-ratio-adaptive-stats.pdf')
+        plt.savefig('kpr-ratio-adaptive-stats.pdf')
 
     plt.figure()
     for acc in kpr_fixedstep_stats['accumulator'].sort_values().unique():
         RK = 'ERK'
-        #for RK in kpr_fixedstep_stats['RK'].sort_values().unique():
-        h      = (kpr_fixedstep_stats.groupby(['order','RK','accumulator']).get_group((3,RK,acc)))['h']
-        #orders = (kpr_fixedstep_stats.groupby(['h','RK','accumulator']).get_group((h,RK,acc)))['order']
-        gmeans = (kpr_fixedstep_stats.groupby(['order','RK','accumulator']).get_group((3,RK,acc)))['gmean']
-        labeltxt = '{0:1}'.format(acc)
-        plt.loglog(h, gmeans, label=labeltxt, marker=accsymbol[acc], color=acccolor[acc], linestyle=RKlines[RK])
+        for order in plotorders:
+            #for RK in kpr_fixedstep_stats['RK'].sort_values().unique():
+            h      = (kpr_fixedstep_stats.groupby(['order','RK','accumulator']).get_group((order,RK,acc)))['h']
+            #orders = (kpr_fixedstep_stats.groupby(['h','RK','accumulator']).get_group((h,RK,acc)))['order']
+            gmeans = (kpr_fixedstep_stats.groupby(['order','RK','accumulator']).get_group((order,RK,acc)))['gmean']
+            if (len(plotorders) > 1):
+                labeltxt = '{0:1}'.format(acc) + ' (order {0:d})'.format(order)
+            else:
+                labeltxt = '{0:1}'.format(acc)
+            plt.loglog(h, gmeans, label=labeltxt, marker=accsymbol[acc], color=acccolor[acc], linestyle=orderstyles[order])
 
     plt.xlabel('h')
     plt.ylabel(r'$\varepsilon^f_{ref}/\varepsilon^f_{approx}$ (geom. mean)')
@@ -268,9 +279,9 @@ if (Generate_stats_plots):
     plt.grid(linestyle='--', linewidth=0.5)
 
     if (Generate_PNG):
-        plt.savefig('3rd order kpr-ratio-fixedstep-stats.png')
+        plt.savefig('kpr-ratio-fixedstep-stats.png')
     if (Generate_PDF):
-        plt.savefig('3rd order kpr-ratio-fixedstep-stats.pdf')
+        plt.savefig('kpr-ratio-fixedstep-stats.pdf')
 
 
 
@@ -330,11 +341,15 @@ if (Generate_stats_plots):
     plt.figure()
     for acc in bruss_adaptive_stats['accumulator'].sort_values().unique():
         RK = 'ERK'
-        #for RK in bruss_adaptive_stats['RK'].sort_values().unique():
-        rtol   = (bruss_adaptive_stats.groupby(['order','RK','accumulator']).get_group((3,RK,acc)))['rtol']
-        gmeans = (bruss_adaptive_stats.groupby(['order','RK','accumulator']).get_group((3,RK,acc)))['gmean']
-        labeltxt = '{0:1}'.format(acc)
-        plt.loglog(rtol, gmeans,'o', label=labeltxt, marker=accsymbol[acc], color=acccolor[acc], linestyle=RKlines[RK])
+        for order in plotorders:
+            #for RK in bruss_adaptive_stats['RK'].sort_values().unique():
+            rtol   = (bruss_adaptive_stats.groupby(['order','RK','accumulator']).get_group((order,RK,acc)))['rtol']
+            gmeans = (bruss_adaptive_stats.groupby(['order','RK','accumulator']).get_group((order,RK,acc)))['gmean']
+            if (len(plotorders) > 1):
+                labeltxt = '{0:1}'.format(acc) + ' (order {0:d})'.format(order)
+            else:
+                labeltxt = '{0:1}'.format(acc)
+            plt.loglog(rtol, gmeans, label=labeltxt, marker=accsymbol[acc], color=acccolor[acc], linestyle=orderstyles[order])
 
     plt.xlabel('rtol')
     plt.ylabel(r'$\varepsilon^f_{ref}/\varepsilon^f_{approx}$ (geom. mean)')
@@ -344,18 +359,22 @@ if (Generate_stats_plots):
     plt.grid(linestyle='--', linewidth=0.5)
 
     if (Generate_PNG):
-        plt.savefig('3rd order bruss-ratio-adaptive-stats.png')
+        plt.savefig('bruss-ratio-adaptive-stats.png')
     if (Generate_PDF):
-        plt.savefig('3rd order bruss-ratio-adaptive-stats.pdf')
+        plt.savefig('bruss-ratio-adaptive-stats.pdf')
     plt.figure()
     for acc in bruss_fixedstep_stats['accumulator'].sort_values().unique():
         RK = 'ERK'
-        #for RK in bruss_fixedstep_stats['RK'].sort_values().unique():
-        h      = (bruss_fixedstep_stats.groupby(['order','RK','accumulator']).get_group((3,RK,acc)))['h']
-        #orders = (bruss_fixedstep_stats.groupby(['h','RK','accumulator']).get_group((h,RK,acc)))['order']
-        gmeans = (bruss_fixedstep_stats.groupby(['order','RK','accumulator']).get_group((3,RK,acc)))['gmean']
-        labeltxt = '{0:1}'.format(acc)
-        plt.loglog(h, gmeans, 'o', label=labeltxt, marker=accsymbol[acc], color=acccolor[acc], linestyle=RKlines[RK])
+        for order in plotorders:
+            #for RK in bruss_fixedstep_stats['RK'].sort_values().unique():
+            h      = (bruss_fixedstep_stats.groupby(['order','RK','accumulator']).get_group((order,RK,acc)))['h']
+            #orders = (bruss_fixedstep_stats.groupby(['h','RK','accumulator']).get_group((h,RK,acc)))['order']
+            gmeans = (bruss_fixedstep_stats.groupby(['order','RK','accumulator']).get_group((order,RK,acc)))['gmean']
+            if (len(plotorders) > 1):
+                labeltxt = '{0:1}'.format(acc) + ' (order {0:d})'.format(order)
+            else:
+                labeltxt = '{0:1}'.format(acc)
+            plt.loglog(h, gmeans, label=labeltxt, marker=accsymbol[acc], color=acccolor[acc], linestyle=orderstyles[order])
 
     plt.xlabel('h')
     plt.ylabel(r'$\varepsilon^f_{ref}/\varepsilon^f_{approx}$ (geom. mean)')
