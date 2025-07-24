@@ -24,7 +24,10 @@ Generate_PDF = True
 Generate_PNG = False
 
 # set a floor for dsm and dsm_est values
-dsm_floor = 1.e-7
+dsm_floor = 1.e-9
+
+# set list of markers for plotting
+markers = ['o', 's', 'D', '^', 'x', '+', 'p', '*', 'h', 'v', 'H', 'X']
 
 # utility functions
 def mname(method):
@@ -48,9 +51,10 @@ def get_row_fixedstep(line):
     dsm = float(txt[7])
     dsm_est = float(txt[9])
     if (dsm_est < dsm_floor or dsm < dsm_floor):
-        ratio = np.nan
+        #ratio = np.nan
+        ratio = 1.0
     else:
-        ratio = dsm/dsm_est
+        ratio = dsm/dsm_est/H
     data = [{'H': H, 'method': method, 't': time, 'ratio': ratio}]
     return pd.DataFrame.from_records(data)
 
@@ -79,7 +83,7 @@ def compile_stats(df):
     maxs = []
     gmeans = []
     for method in df['method'].sort_values().unique():
-        for H in (df.groupby(['method']).get_group((method)))['H'].sort_values().unique():
+        for H in (df.groupby(['method']).get_group((method,)))['H'].sort_values().unique():
             ratio = (df.groupby(['H','method']).get_group((H,method)))['ratio']
             Hs.append(H)
             methods.append(method)
@@ -103,7 +107,7 @@ def do_plots(fname, problem, picname):
         t = data['t'].sort_values().unique()
         plt.figure()
         for method in data['method'].sort_values().unique():
-            for H in (data.groupby(['method']).get_group((method)))['H'].sort_values().unique():
+            for H in (data.groupby(['method']).get_group((method,)))['H'].sort_values().unique():
                 ratio = (data.groupby(['H','method']).get_group((H,method)))['ratio']
                 labeltxt = mname(method) + ' H {0:.1e}'.format(H)
                 plt.semilogy(t[:len(ratio)], ratio, label=labeltxt)
@@ -122,13 +126,16 @@ def do_plots(fname, problem, picname):
     if (Generate_stats_plots):
         stats = compile_stats(data)
         plt.figure()
+        midx = 0
         for method in stats['method'].sort_values().unique():
-            Hs = (stats.groupby(['method']).get_group((method)))['H']
-            gmeans = (stats.groupby(['method']).get_group((method)))['gmean']
-            plt.loglog(Hs, gmeans, 'o', label=mname(method))
+            Hs = (stats.groupby(['method']).get_group((method,)))['H']
+            gmeans = (stats.groupby(['method']).get_group((method,)))['gmean']
+            m = markers[midx % len(markers)]
+            midx += 1
+            plt.loglog(Hs, gmeans, marker=m, label=mname(method))
 
         plt.xlabel('step size')
-        plt.ylabel(r'$\varepsilon^s_{ref}/\varepsilon^s_{approx}$ (geom. mean)')
+        plt.ylabel(r'$\varepsilon^s_{ref}/(H \varepsilon^s_{approx})$ (geom. mean)')
         plt.title('Slow error estimation -- ' + problem)
         plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
         plt.tight_layout()
