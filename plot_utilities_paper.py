@@ -183,13 +183,13 @@ con = [("H-h", Hh_controllers),
 def mname(method):
     """
     Splits the method name based on underscores, removes the strings 'ARKODE' and 'GARK' ,
-    and joins the results back together.
+    and joins the results back together with spaces to separate.
     """
     msplit = method.split('_')
     pruned = [s for s in msplit if s != 'ARKODE']
     pruned2 = [s for s in pruned if s != 'GARK']
     pruned3 = [s for s in pruned2 if s != 'MRI']
-    return " ".join(pruned3)
+    return "".join(pruned3)
 
 
 def print_failed_tests(fname, prefix):
@@ -225,13 +225,13 @@ def combine():
             if os.path.exists(filename) and os.path.exists(prob+'-'+method):
                 os.remove(filename)
                 os.remove(prob+'-'+method)
-                
+
             else:
                 print("The file does not exist")
 
     combined = pd.concat(dfs, ignore_index=True)
     combined.to_excel("rank_stats.xlsx", index=False)
-    
+
 def get_work(errorarr, workarr, errorval):
     """
     Given input arrays errorarr = [err0, err1, ..., errN] and workarr = [work0, work1, ..., workN],
