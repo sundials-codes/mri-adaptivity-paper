@@ -86,8 +86,8 @@ DoBrusselator = True
 
 # Lists of MRI methods/orders, controllers, and tolerances to test
 method = ["ARKODE_MRI_GARK_ERK22b", 2]
-Controls = ['MRIDec-I', 'MRIHTol-H211']
-RTols = [1.e-3, 1.e-4, 1.e-5, 1.e-6, 1.e-7]
+Controls = ['MRIHTol-I']
+RTols = [1.e-2, 1.e-4, 1.e-6, 1.e-8]
 atol = 1.e-11
 
 # Nested KPR parameters
