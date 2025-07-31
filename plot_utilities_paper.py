@@ -487,7 +487,7 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
         for mri_method in mri_methods:
             if check(control,mri_method,retained_pairs,reverse=1):
                 continue
-            ltext = mname(mri_method)+' + '+controltext[control]
+            ltext = mname(mri_method)+'+'+controltext[control]
             mcolor = methodcolor[mri_method]
             msymbol = controlsymbol[control]
 
