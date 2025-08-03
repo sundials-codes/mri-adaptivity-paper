@@ -539,7 +539,7 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
 
 
 
-    fig.legend(handles, labels, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox)
+    fig.legend(handles, labels, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox,fontsize=10)
     if (Generate_PNG):
         plt.savefig('top_pairs'+rank_names + '.png')
     if (Generate_PDF):
