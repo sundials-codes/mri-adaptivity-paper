@@ -396,7 +396,7 @@ def make_efficiency_comparison_plot(data, mratekey, mratevals, controllers, mri_
     comparison_data_slow2 = []
     comparison_data_fast2 = []
     Master_data=data
-    cut_off_rank=12
+    cut_off_rank=15
     for control in controllers:
         data=Master_data[Master_data['control'] == control]
         for mri_method in mri_methods:
@@ -586,9 +586,13 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
     fig.legend(handles, labels, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox,fontsize=10)
     fig2.legend(handles2, labels2, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox,fontsize=10)
     if (Generate_PNG):
-        plt.savefig('top_pairs'+rank_names + '.png')
+        fig.savefig('top_pairs'+rank_names + '_slow.png')
     if (Generate_PDF):
-        plt.savefig('paper-top_pairs_efficencies_'+rank_names + '.pdf')
+        fig.savefig('paper-top_pairs_efficencies_'+rank_names + '_slow.pdf')
+    if (Generate_PNG):
+        fig2.savefig('top_pairs'+rank_names + '_fast.png')
+    if (Generate_PDF):
+        fig2.savefig('paper-top_pairs_efficencies_'+rank_names + '_fast.pdf')
 
 def do_comparison_plots(fname, mratekey, mratevals, mratetxt,controllers, titletxt, picname,removed_pairs,rank_name,xlimlo,xlimmid,xlimhi):
 
