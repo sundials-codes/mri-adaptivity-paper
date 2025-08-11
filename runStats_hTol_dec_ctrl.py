@@ -28,13 +28,26 @@
 import pandas as pd
 import numpy as np
 
-ctrl_type      = ["MRIHTol", "MRIDec"]
-ctrl_to_remove = ['MRIPI', 'MRIPID', 'MRICC', 'MRILL'] #Remove the H-h controllers
+def ctrl_rename(df):
+    data = df[["metric", "order", "Param", "MRIMethod", "Controller", "AvgRank"]].copy()
+    data.loc[df["Controller"].str.startswith("MRIHTol"), "ctrl_name"] = "HTol"
+    data.loc[df["Controller"].str.startswith("MRIDec"), "ctrl_name"]  = "Dec"
+    data.loc[df["Controller"].str.startswith("MRIPI"), "ctrl_name"]   = "Hh"
+    data.loc[df["Controller"].str.startswith("MRIPID"), "ctrl_name"]  = "Hh"
+    data.loc[df["Controller"].str.startswith("MRICC"), "ctrl_name"]   = "Hh"
+    data.loc[df["Controller"].str.startswith("MRILL"), "ctrl_name"]   = "Hh"
+    return data
 
-def allCtrl_tests(df,ctrl_type, ctrl_to_remove):
+df = pd.read_excel("rank_stats.xlsx")
+final_data_rename = ctrl_rename(df)
+final_data_rename.to_excel("rename_controllers.xlsx", index=False)
+
+
+ctrl_type = ["HTol", "Dec",'Hh']
+def allCtrl_tests(df,ctrl_type):
     
     # filter the data you want
-    data = df[(~df['Controller'].isin(ctrl_to_remove))][["metric", "order", "Param", "MRIMethod", "Controller", "AvgRank"]]
+    data = df[["metric", "order", "Param", "MRIMethod", "Controller", "ctrl_name", "AvgRank"]].copy()
     
     #calculate the overall mean and standard deviation
     allAvg = data["AvgRank"].mean()
@@ -42,7 +55,7 @@ def allCtrl_tests(df,ctrl_type, ctrl_to_remove):
 
     for ctrl_prefix in ctrl_type:
         #calculate the mean of all controllers with a particular prefix
-        ctrl_subset = data[data["Controller"].str.startswith(ctrl_prefix)]
+        ctrl_subset = data[data["ctrl_name"].str.startswith(ctrl_prefix)]
         prefix_avg = ctrl_subset["AvgRank"].mean()
 
         zScore = (prefix_avg - allAvg)/allSD
@@ -51,12 +64,12 @@ def allCtrl_tests(df,ctrl_type, ctrl_to_remove):
 
     return data
 
-#run test
-df = pd.read_excel("rank_stats.xlsx")
-final_data = allCtrl_tests(df,ctrl_type, ctrl_to_remove)
+# # run test
+df = pd.read_excel("rename_controllers.xlsx")
+final_data = allCtrl_tests(df,ctrl_type)
 
 # excel file containing the results for all controllers, across all prolems types, methods and metric
-final_data.to_excel("htol_dec_controllers.xlsx", index=False)
+final_data.to_excel("htol_dec_Hh_controllers.xlsx", index=False)
 
 # output the zscore for all HTol and Decoupled controllers to a text file
 select_data = final_data[(final_data["Controller"] == "MRIHTol-I")]
@@ -65,9 +78,10 @@ HTol_zScore = select_data["zScore"].iloc[0] #the zscores are the same for all HT
 select_data = final_data[(final_data["Controller"] == "MRIDec-I")]
 Dec_zScore = select_data["zScore"].iloc[0] #the zscores are the same for all Decoupled controllers so just choose one
 
+select_data = final_data[(final_data["Controller"] == "MRIPID")]
+Hh_zScore = select_data["zScore"].iloc[0] #the zscores are the same for all Decoupled controllers so just choose one
+
 with open("zScores_HTol_Dec.txt", "w") as file:
     file.write(f"The z-score for the MRIHTol controllers is: {HTol_zScore}\n\n")
     file.write(f"The z-score for the MRIDec controllers is: {Dec_zScore}\n\n")
-
-
-
+    file.write(f"The z-score for the Hh controllers is: {Hh_zScore}\n\n")

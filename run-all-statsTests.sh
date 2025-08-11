@@ -17,7 +17,7 @@ python3 runStats_fixedMethod_tests.py
 echo -e "Running statistical analysis for Brusselator and KPR, for all controllers \n"
 python3 runStats_allCtrls.py
 
-echo -e "Running statistical analysis for Brusselator and KPR, for all HTol and Decoupled controllers \n"
+echo -e "Running statistical analysis for Brusselator and KPR, for all HTol, Decoupled and Hh controllers \n"
 python3 runStats_hTol_dec_ctrl.py
 
 echo -e "Run tests completed!\n"
