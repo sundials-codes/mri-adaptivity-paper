@@ -29,8 +29,8 @@ accuracy_figsize = (8,7)
 accuracy_bbox = (0.55, 0.97)
 work_figsize = (9,10)
 work_bbox = (0.57, 0.97)
-efficiency_figsize = (7,5)
-efficiency_bbox = (0.725, 0.775)
+efficiency_figsize = (12.0,3.5)
+efficiency_bbox = (0.725, 0.96)
 
 # vertical axis limits
 #verification_accuracy_ylim = [1e-1, 1e7]
@@ -588,8 +588,8 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
 
 
 
-    fig.legend(handles, labels, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox,fontsize=10)
-    fig2.legend(handles2, labels2, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox,fontsize=10)
+    fig.legend(handles, labels, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox,fontsize=12)
+    fig2.legend(handles2, labels2, title='Method + Controller', loc='upper left', bbox_to_anchor=efficiency_bbox,fontsize=12)
     if (Generate_PNG):
         fig.savefig('top_pairs'+rank_names + '_slow.png')
     if (Generate_PDF):
