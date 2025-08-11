@@ -478,6 +478,7 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
     ax3 = fig.add_subplot(gs[0,1])  # bottom-left
     ax4 = fig2.add_subplot(gs2[0,1])  # bottom-middle
 
+    #graph slow work
     retained_pairs=pd.read_excel(rank_names+'slow.xlsx')
     retained_pairs=list(retained_pairs.itertuples(index=False, name=None))
     comparison_data_slow1 = []
@@ -521,7 +522,7 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
             #ax4.loglog(faststeps+fastfails, error, marker=msymbol, color=mcolor, ls='-', label=ltext, markersize=10)
             comparison_data_slow2.append({'method': mri_method+' + '+control, 'works': slowsteps+slowfails, 'errors': error})
             #comparison_data_fast2.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
-
+    #graph has work
     retained_pairs=pd.read_excel(rank_names+'fast.xlsx')
     retained_pairs=list(retained_pairs.itertuples(index=False, name=None))
     for control in controllers:
@@ -567,8 +568,12 @@ def best_efficiencies_comparison_plot(data, mratekey, mratevals, mratetxt, contr
     ax2.set_xlabel(r'fast work')
     ax3.set_xlabel(r'slow work')
     ax4.set_xlabel(r'fast work')
-    ax1.set_ylabel(r'error, ' + mratetxt + ' = ' + str(mratevals[0]))
-    ax2.set_ylabel(r'error, ' + mratetxt + ' = ' + str(mratevals[1]))
+    ax1.set_ylabel(r'Error')
+    ax2.set_ylabel(r'Error')
+    ax1.set_title(mratetxt+"="+str(mratevals[0]))
+    ax2.set_title(mratetxt+"="+str(mratevals[0]))
+    ax3.set_title(mratetxt+"="+str(mratevals[1]))
+    ax4.set_title(mratetxt+"="+str(mratevals[1]))
 
     ax1.set_xlim(xlim1)
     ax2.set_xlim(xlim2)
