@@ -42,6 +42,21 @@ controlcolor = {'MRIHTol-I': cmap(0),
                 'MRIPI': cmap(2),
                 'MRIPID': cmap(3)}
 
+controlname = {'MRIHTol-I': 'HT-I',
+               'MRIHTol-H0211': 'HT-H0211',
+               'MRIHTol-H0321': 'HT-H0321',
+               'MRIHTol-H211': 'HT-H211',
+               'MRIHTol-H312': 'HT-H312',
+               'MRIDec-I': 'D-I',
+               'MRIDec-H0211': 'D-H0211',
+               'MRIDec-H0321': 'D-H0321',
+               'MRIDec-H211': 'D-H211',
+               'MRIDec-H312': 'D-H312',
+               'MRICC': 'MRI-CC',
+               'MRILL': 'MRILL',
+               'MRIPI': 'MRIPI',
+               'MRIPID': 'MRIPID'}
+
 def do_test_plots(fname, titletxt, picname, slowstride=None, faststride=None):
     """
     fname = filename with pickled data
@@ -70,7 +85,7 @@ def do_test_plots(fname, titletxt, picname, slowstride=None, faststride=None):
             sstride = len(arr)//NPlotSlow
         Hvals = np.mean(arr[:len(arr) - (len(arr) % sstride)].reshape(-1, sstride), axis=1)
         Tvals = (np.array(runstats['T'])[::sstride])[:len(Hvals)]
-        ltext = control + '\n steps: ' + str(Nslow) + ', ' + str(Nfast) + '\n accuracy: ' + f"{accuracy:.1f}"
+        ltext = controlname[control] + '\n steps: ' + str(Nslow) + ', ' + str(Nfast) + '\n accuracy: ' + f"{accuracy:.1f}"
         ax1.semilogy(Tvals, Hvals, color=pcolor, marker='.', ls='none', label=ltext)
 
         arr = np.array(runstats['h'])
