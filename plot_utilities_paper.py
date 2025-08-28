@@ -313,10 +313,22 @@ def compare_efficiency(data,param,metric, errorwindow=[1e-6,1e-2], nerr=20):
         # sort by 'work' values
         sorted_work = sorted(workdict, key=lambda x: x['work'])
 
-        # accumulate ranks for each method, dividing by the number of error test values to build running average
-        for i in range(len(sorted_work)):
-            s = sorted_work[i]
-            workranks[s['method']] += (i+1.0)/nerr
+        # accumulate ranks for each method, dividing by the number of error test valus
+        i = 0
+        while i < len(sorted_work):
+            # find all entries with the same 'work' value
+            j = i
+            while j < len(sorted_work) and sorted_work[j]['work'] == sorted_work[i]['work']:
+                j += 1
+            
+            # assign the same rank to this group 
+            rank = (i+1.0) / nerr
+            
+            for k in range(i, j):
+                s = sorted_work[k]
+                workranks[s['method']] += rank
+            
+            i = j
 
     # sort the method names by their rank sums
     method_ranks = dict(sorted(workranks.items(), key=lambda item: item[1]))
@@ -426,6 +438,8 @@ def make_efficiency_comparison_data(data, mratekey, mratevals, controllers, mri_
             comparison_data_fast2.append({'method': mri_method+' + '+control, 'works': faststeps+fastfails, 'errors': error})
 
     # output efficiency comparisons for both multirate values and for both slow/fast work
+    X=pd.DataFrame.from_records(comparison_data_slow1)
+    X.to_excel('check.xlsx',index=False)
     ranks_slow1 = compare_efficiency(comparison_data_slow1, mratevals[0], 'slow')
     ranks_slow1_loc = ranks_slow1.loc[ranks_slow1['AvgRank'] <= cut_off_rank, ['Controller', 'MRIMethod']]
 
@@ -462,10 +476,10 @@ def make_efficiency_comparison_data(data, mratekey, mratevals, controllers, mri_
     rankslow.to_excel(rank_name+'slow.xlsx',index=False)
     rankfast.to_excel(rank_name+'fast.xlsx',index=False)
 
-    ranks_slow1.to_excel(rank_name+'_check_slow1.xlsx',index=False)
-    ranks_slow2.to_excel(rank_name+'_check_slow2.xlsx',index=False)
-    ranks_fast1.to_excel(rank_name+'_check_fast1.xlsx',index=False)
-    ranks_fast2.to_excel(rank_name+'_check_fast2.xlsx',index=False)
+    ranks_slow1.to_excel(rank_name+'_check_slow3.xlsx',index=False)
+    ranks_slow2.to_excel(rank_name+'_check_slow4.xlsx',index=False)
+    ranks_fast1.to_excel(rank_name+'_check_fast3.xlsx',index=False)
+    ranks_fast2.to_excel(rank_name+'_check_fast4.xlsx',index=False)
 
     # output statistic dataframe
     ranks_stats_df=pd.concat([ranks_slow1,ranks_fast1,ranks_slow2,ranks_fast2])

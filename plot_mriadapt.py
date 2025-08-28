@@ -27,21 +27,21 @@ kpr_failed_pairs = data2.loc[data2['ReturnCode'] == 1, ['control', 'mri_method']
 # flags to turn on/off certain plots
 Plot_KPR = True
 Plot_Bruss = True
-Hh_controllers={'MRICC',
+Hh_controllers=['MRICC',
               'MRILL',
               'MRIPI',
-              'MRIPID'}
-Htol_controllers={'MRIHTol-H0211',
+              'MRIPID']
+Htol_controllers=['MRIHTol-H0211',
                 'MRIHTol-H0321',
                 'MRIHTol-H211',
                 'MRIHTol-I',
-                'MRIHTol-H312'}
-Decoupled_controllers={'MRIDec-H0211',
+                'MRIHTol-H312']
+Decoupled_controllers=['MRIDec-H0211',
                 'MRIDec-H0321',
                 'MRIDec-H211',
                 'MRIDec-I',
-                'MRIDec-H312',}
-Full_controllers={'MRICC',
+                'MRIDec-H312',]
+Full_controllers=['MRICC',
                 'MRILL',
                 'MRIPI',
                 'MRIPID',
@@ -54,7 +54,7 @@ Full_controllers={'MRICC',
                 'MRIHTol-H0321',
                 'MRIHTol-H211',
                 'MRIHTol-I',
-                'MRIHTol-H312'}
+                'MRIHTol-H312']
 
 kpr_retained_low_pairs=[('MRIDec-I','ARKODE_MRI_GARK_IRK21a'),
                     ('MRIDec-H211','ARKODE_IMEX_MRI_SR21'),
