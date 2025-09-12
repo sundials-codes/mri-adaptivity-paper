@@ -103,9 +103,9 @@ def get_mrihh_step_histories(fname):
 
 
 # utility routine to run a kpr test, storing the run options and solver statistics
-def runtest_kpr(exe, e, omega, atol, rtol, mri, order, control, showcommand=False, removelog=True):
-    stats = {'e': e, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
-    runcommand = "%s --e %e --w %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, e, omega, atol, rtol, rtol, mri, order) + controller(control)
+def runtest_kpr(exe, es, ef, omega, atol, rtol, mri, order, control, showcommand=False, removelog=True):
+    stats = {'es': es, 'ef': ef, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
+    runcommand = "%s --es %e --ef %e --w %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, es, ef, omega, atol, rtol, rtol, mri, order) + controller(control)
     logfile = 'kpr-log-' + control + '.txt'
     env = os.environ.copy()
     env["SUNLOGGER_INFO_FILENAME"] = logfile
@@ -188,7 +188,8 @@ atol = 1.e-11
 mri_method = "ARKODE_MRI_GARK_ERK33a"
 fast_order = 3
 omega = 50.0  # kpr multirate parameter
-e = 5.0       # kpr coupling parameter
+es = 5.0      # kpr fast->slow coupling parameter
+ef = 5.0      # kpr slow->fast coupling parameter
 eps = 1.e-4   # bruss parameter
 
 # empty statistics objects
@@ -196,9 +197,9 @@ KPRStats = []
 BrussStats = []
 
 # Run both test problems using a few controllers
-KPRStats.append(runtest_kpr(kpr_exe, e, omega, atol, rtol, mri_method, fast_order, 'MRIDec-H312'))
-KPRStats.append(runtest_kpr(kpr_exe, e, omega, atol, rtol, mri_method, fast_order, 'MRIHTol-H211'))
-KPRStats.append(runtest_kpr(kpr_hh_exe, e, omega, atol, rtol, mri_method, fast_order, 'MRICC'))
+KPRStats.append(runtest_kpr(kpr_exe, es, ef, omega, atol, rtol, mri_method, fast_order, 'MRIDec-H312'))
+KPRStats.append(runtest_kpr(kpr_exe, es, ef, omega, atol, rtol, mri_method, fast_order, 'MRIHTol-H211'))
+KPRStats.append(runtest_kpr(kpr_hh_exe, es, ef, omega, atol, rtol, mri_method, fast_order, 'MRICC'))
 
 BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, 'MRIDec-H312'))
 BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, 'MRIHTol-H211'))

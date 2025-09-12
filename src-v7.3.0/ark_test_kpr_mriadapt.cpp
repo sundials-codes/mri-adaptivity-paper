@@ -13,8 +13,8 @@
  * ----------------------------------------------------------------
  * Multirate nonlinear Kvaerno-Prothero-Robinson ODE test problem:
  *
- *    [u]' = [ G  e ] [(u^2-r-1)/(2u)] +  [ r'(t)/(2u) ]
- *    [v]    [ e -1 ] [(v^2-s-2)/(2v)]    [ s'(t)/(2v) ]
+ *    [u]' = [ G  es ] [(u^2-r-1)/(2u)] +  [ r'(t)/(2u) ]
+ *    [v]    [ ef -1 ] [(v^2-s-2)/(2v)]    [ s'(t)/(2v) ]
  *         = [ fs(t,u,v) ]
  *           [ ff(t,u,v) ]
  *
@@ -26,7 +26,8 @@
  * of the local multirate adaptivity controller.
  *
  * This program allows a number of parameters:
- *   e: fast/slow coupling strength [default = 0.5]
+ *   es: fast->slow coupling strength [default = 0.5]
+ *   ef: slow->fast coupling strength [default = 0.5]
  *   G: stiffness at slow time scale [default = -1e2]
  *   w: time-scale separation factor [default = 100]
  *
@@ -34,8 +35,8 @@
  * by G, for |G| > 50 it is 'stiff' and ideally suited to a
  * multirate method that is implicit at the slow time scale.
  *
- * Coupling between the two components is determined by e, with
- * coupling strength proportional to |e|.
+ * Coupling between the two components is determined by es and ef,
+ * with coupling strength proportional to max(|es|,|ef|).
  *
  * The "fast" variable, v, oscillates at a frequency "w" times
  * faster than u.
@@ -142,9 +143,10 @@
 struct Options
 {
   // Problem parameters
-  sunrealtype e = SUN_RCONST(0.5);
-  sunrealtype G = SUN_RCONST(-100.0);
-  sunrealtype w = SUN_RCONST(100.0);
+  sunrealtype es = SUN_RCONST(0.5);
+  sunrealtype ef = SUN_RCONST(0.5);
+  sunrealtype G  = SUN_RCONST(-100.0);
+  sunrealtype w  = SUN_RCONST(100.0);
 
   // Step sizes and tolerances
   int set_h0            = 0;
@@ -259,7 +261,8 @@ int main(int argc, char* argv[])
   std::cout << "    time domain:  (" << T0 << "," << Tf << "]\n";
   std::cout << "    G = " << opts.G << std::endl;
   std::cout << "    w = " << opts.w << std::endl;
-  std::cout << "    e = " << opts.e << std::endl;
+  std::cout << "    es = " << opts.es << std::endl;
+  std::cout << "    ef = " << opts.ef << std::endl;
   std::cout << "\n  Slow integrator: " << opts.mri_method;
   if (slowimex) { std::cout << " (ImEx)" << std::endl; }
   else if (slowimplicit) { std::cout << " (implicit)" << std::endl; }
@@ -939,12 +942,12 @@ static int ff(sunrealtype t, N_Vector y, N_Vector ydot, void* user_data)
   sunrealtype tmp1, tmp2;
 
   // fill in the RHS function:
-  //   [0  0]*[(-2+u^2-r(t))/(2*u)] + [     0      ]
-  //   [e -1] [(-2+v^2-s(t))/(2*v)]   [sdot(t)/(2v)]
+  //   [0   0]*[(-2+u^2-r(t))/(2*u)] + [     0      ]
+  //   [ef -1] [(-2+v^2-s(t))/(2*v)]   [sdot(t)/(2v)]
   tmp1      = (-TWO + u * u - r(t, opts)) / (TWO * u);
   tmp2      = (-TWO + v * v - s(t, opts)) / (TWO * v);
   dydata[0] = ZERO;
-  dydata[1] = opts->e * tmp1 - tmp2 + sdot(t, opts) / (TWO * v);
+  dydata[1] = opts->ef * tmp1 - tmp2 + sdot(t, opts) / (TWO * v);
 
   // Return with success
   return 0;
@@ -961,11 +964,11 @@ static int fs(sunrealtype t, N_Vector y, N_Vector ydot, void* user_data)
   sunrealtype tmp1, tmp2;
 
   // fill in the RHS function:
-  //   [G  e]*[(-2+u^2-r(t))/(2*u)] + [rdot(t)/(2u)]
-  //   [0  0] [(-2+v^2-s(t))/(2*v)]   [      0     ]
+  //   [G  es]*[(-2+u^2-r(t))/(2*u)] + [rdot(t)/(2u)]
+  //   [0  0 ] [(-2+v^2-s(t))/(2*v)]   [      0     ]
   tmp1      = (-TWO + u * u - r(t, opts)) / (TWO * u);
   tmp2      = (-TWO + v * v - s(t, opts)) / (TWO * v);
-  dydata[0] = opts->G * tmp1 + opts->e * tmp2 + rdot(t, opts) / (TWO * u);
+  dydata[0] = opts->G * tmp1 + opts->es * tmp2 + rdot(t, opts) / (TWO * u);
   dydata[1] = ZERO;
 
   // Return with success
@@ -1001,11 +1004,11 @@ static int fsi(sunrealtype t, N_Vector y, N_Vector ydot, void* user_data)
   sunrealtype tmp1, tmp2;
 
   // fill in the slow implicit RHS function:
-  //   [G  e]*[(-2+u^2-r(t))/(2*u)]
-  //   [0  0] [(-2+v^2-s(t))/(2*v)]
+  //   [G  es]*[(-2+u^2-r(t))/(2*u)]
+  //   [0  0 ] [(-2+v^2-s(t))/(2*v)]
   tmp1      = (-TWO + u * u - r(t, opts)) / (TWO * u);
   tmp2      = (-TWO + v * v - s(t, opts)) / (TWO * v);
-  dydata[0] = opts->G * tmp1 + opts->e * tmp2;
+  dydata[0] = opts->G * tmp1 + opts->es * tmp2;
   dydata[1] = ZERO;
 
   // Return with success
@@ -1022,12 +1025,12 @@ static int fn(sunrealtype t, N_Vector y, N_Vector ydot, void* user_data)
   sunrealtype tmp1, tmp2;
 
   // fill in the RHS function:
-  //   [G  e]*[(-2+u^2-r(t))/(2*u)] + [rdot(t)/(2u)]
-  //   [e -1] [(-2+v^2-s(t))/(2*v)]   [sdot(t)/(2v)]
+  //   [G  es]*[(-2+u^2-r(t))/(2*u)] + [rdot(t)/(2u)]
+  //   [ef -1] [(-2+v^2-s(t))/(2*v)]   [sdot(t)/(2v)]
   tmp1      = (-TWO + u * u - r(t, opts)) / (TWO * u);
   tmp2      = (-TWO + v * v - s(t, opts)) / (TWO * v);
-  dydata[0] = opts->G * tmp1 + opts->e * tmp2 + rdot(t, opts) / (TWO * u);
-  dydata[1] = opts->e * tmp1 - tmp2 + sdot(t, opts) / (TWO * v);
+  dydata[0] = opts->G * tmp1 + opts->es * tmp2 + rdot(t, opts) / (TWO * u);
+  dydata[1] = opts->ef * tmp1 - tmp2 + sdot(t, opts) / (TWO * v);
 
   // Return with success
   return 0;
@@ -1049,12 +1052,12 @@ static int Js(sunrealtype t, N_Vector y, N_Vector fy, SUNMatrix J,
   sunrealtype t11, t22;
 
   // fill in the Jacobian:
-  //   [G  e]*[1-(u^2-r(t)-2)/(2*u^2),  0] + [-r'(t)/(2*u^2),  0]
-  //   [0  0] [0,  1-(v^2-s(t)-2)/(2*v^2)]   [0,               0]
+  //   [G  es]*[1-(u^2-r(t)-2)/(2*u^2),  0] + [-r'(t)/(2*u^2),  0]
+  //   [0   0] [0,  1-(v^2-s(t)-2)/(2*v^2)]   [0,               0]
   t11                   = ONE - (u * u - r(t, opts) - TWO) / (TWO * u * u);
   t22                   = ONE - (v * v - s(t, opts) - TWO) / (TWO * v * v);
   SM_ELEMENT_D(J, 0, 0) = opts->G * t11 - rdot(t, opts) / (TWO * u * u);
-  SM_ELEMENT_D(J, 0, 1) = opts->e * t22;
+  SM_ELEMENT_D(J, 0, 1) = opts->es * t22;
   SM_ELEMENT_D(J, 1, 0) = ZERO;
   SM_ELEMENT_D(J, 1, 1) = ZERO;
 
@@ -1072,12 +1075,12 @@ static int Jsi(sunrealtype t, N_Vector y, N_Vector fy, SUNMatrix J,
   sunrealtype t11, t22;
 
   // fill in the Jacobian:
-  //   [G  e]*[1-(u^2-r(t)-2)/(2*u^2),  0]
-  //   [0  0] [0,  1-(v^2-s(t)-2)/(2*v^2)]
+  //   [G  es]*[1-(u^2-r(t)-2)/(2*u^2),  0]
+  //   [0   0] [0,  1-(v^2-s(t)-2)/(2*v^2)]
   t11                   = ONE - (u * u - r(t, opts) - TWO) / (TWO * u * u);
   t22                   = ONE - (v * v - s(t, opts) - TWO) / (TWO * v * v);
   SM_ELEMENT_D(J, 0, 0) = opts->G * t11;
-  SM_ELEMENT_D(J, 0, 1) = opts->e * t22;
+  SM_ELEMENT_D(J, 0, 1) = opts->es * t22;
   SM_ELEMENT_D(J, 1, 0) = ZERO;
   SM_ELEMENT_D(J, 1, 1) = ZERO;
 
@@ -1095,13 +1098,13 @@ static int Jn(sunrealtype t, N_Vector y, N_Vector fy, SUNMatrix J,
   sunrealtype t11, t22;
 
   // fill in the Jacobian:
-  //   [G  e]*[1-(u^2-r(t)-2)/(2*u^2),  0] + [-r'(t)/(2*u^2),  0]
-  //   [e -1] [0,  1-(v^2-s(t)-2)/(2*v^2)]   [0,  -s'(t)/(2*v^2)]
+  //   [G  es]*[1-(u^2-r(t)-2)/(2*u^2),  0] + [-r'(t)/(2*u^2),  0]
+  //   [ef -1] [0,  1-(v^2-s(t)-2)/(2*v^2)]   [0,  -s'(t)/(2*v^2)]
   t11                   = ONE - (u * u - r(t, opts) - TWO) / (TWO * u * u);
   t22                   = ONE - (v * v - s(t, opts) - TWO) / (TWO * v * v);
   SM_ELEMENT_D(J, 0, 0) = opts->G * t11 - rdot(t, opts) / (TWO * u * u);
-  SM_ELEMENT_D(J, 0, 1) = opts->e * t22;
-  SM_ELEMENT_D(J, 1, 0) = opts->e * t11;
+  SM_ELEMENT_D(J, 0, 1) = opts->es * t22;
+  SM_ELEMENT_D(J, 1, 0) = opts->ef * t11;
   SM_ELEMENT_D(J, 1, 1) = -t22 - sdot(t, opts) / (TWO * v * v);
 
   // Return with success
@@ -1157,7 +1160,8 @@ void InputHelp()
   std::cout << std::endl;
   std::cout << "Command line options:" << std::endl;
   std::cout << "  --help         : print options and exit\n";
-  std::cout << "  --e            : fast/slow coupling strength\n";
+  std::cout << "  --es           : fast->slow coupling strength\n";
+  std::cout << "  --ef           : slow->fast coupling strength\n";
   std::cout << "  --G            : stiffness at slow time scale\n";
   std::cout << "  --w            : time-scale separation factor\n";
   std::cout << "  --hs           : slow (fixed/initial) step size\n";
@@ -1199,7 +1203,8 @@ int ReadInputs(std::vector<std::string>& args, Options& opts, SUNContext ctx)
   }
 
   // Problem options
-  find_arg(args, "--e", opts.e);
+  find_arg(args, "--es", opts.es);
+  find_arg(args, "--ef", opts.ef);
   find_arg(args, "--G", opts.G);
   find_arg(args, "--w", opts.w);
   find_arg(args, "--hs", opts.hs);
