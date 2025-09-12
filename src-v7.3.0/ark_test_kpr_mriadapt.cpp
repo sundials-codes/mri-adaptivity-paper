@@ -1329,7 +1329,7 @@ static void PrintSlowAdaptivity(Options opts)
     {
       std::cout << "    slow controller parameter: " << opts.k1s << "\n";
     }
-    if (std::min(opts.htol_relch, std::min(opts.htol_minfac, opts.htol_maxfac)) >
+    if (std::max(opts.htol_relch, std::max(opts.htol_minfac, opts.htol_maxfac)) >
         -1)
     {
       std::cout << "    HTol controller parameters: " << opts.htol_relch << " "
@@ -1352,12 +1352,12 @@ static void PrintSlowAdaptivity(Options opts)
       << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
-    if (std::min(opts.k1s, opts.k2s) > -1)
+    if (std::max(opts.k1s, opts.k2s) > -1)
     {
       std::cout << "    slow controller parameters: " << opts.k1s << " "
                 << opts.k2s << "\n";
     }
-    if (std::min(opts.htol_relch, std::min(opts.htol_minfac, opts.htol_maxfac)) >
+    if (std::max(opts.htol_relch, std::max(opts.htol_minfac, opts.htol_maxfac)) >
         -1)
     {
       std::cout << "    HTol controller parameters: " << opts.htol_relch << " "
@@ -1369,7 +1369,7 @@ static void PrintSlowAdaptivity(Options opts)
                  "order of MRI "
               << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    if (std::min(opts.k1s, opts.k2s) > -1)
+    if (std::max(opts.k1s, opts.k2s) > -1)
     {
       std::cout << "    slow controller parameters: " << opts.k1s << " "
                 << opts.k2s << "\n";
@@ -1381,12 +1381,12 @@ static void PrintSlowAdaptivity(Options opts)
       << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
-    if (std::min(opts.k1s, std::min(opts.k2s, opts.k3s)) > -1)
+    if (std::max(opts.k1s, std::max(opts.k2s, opts.k3s)) > -1)
     {
       std::cout << "    slow controller parameters: " << opts.k1s << " "
                 << opts.k2s << " " << opts.k3s << "\n";
     }
-    if (std::min(opts.htol_relch, std::min(opts.htol_minfac, opts.htol_maxfac)) >
+    if (std::max(opts.htol_relch, std::max(opts.htol_minfac, opts.htol_maxfac)) >
         -1)
     {
       std::cout << "    HTol controller parameters: " << opts.htol_relch << " "
@@ -1398,7 +1398,7 @@ static void PrintSlowAdaptivity(Options opts)
                  "order of MRI "
               << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    if (std::min(opts.k1s, std::min(opts.k2s, opts.k3s)) > -1)
+    if (std::max(opts.k1s, std::max(opts.k2s, opts.k3s)) > -1)
     {
       std::cout << "    slow controller parameters: " << opts.k1s << " "
                 << opts.k2s << " " << opts.k3s << "\n";
@@ -1410,12 +1410,12 @@ static void PrintSlowAdaptivity(Options opts)
       << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
-    if (std::min(opts.k1s, opts.k2s) > -1)
+    if (std::max(opts.k1s, opts.k2s) > -1)
     {
       std::cout << "    slow controller parameters: " << opts.k1s << " "
                 << opts.k2s << "\n";
     }
-    if (std::min(opts.htol_relch, std::min(opts.htol_minfac, opts.htol_maxfac)) >
+    if (std::max(opts.htol_relch, std::max(opts.htol_minfac, opts.htol_maxfac)) >
         -1)
     {
       std::cout << "    HTol controller parameters: " << opts.htol_relch << " "
@@ -1427,7 +1427,7 @@ static void PrintSlowAdaptivity(Options opts)
                  "on order of MRI "
               << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    if (std::min(opts.k1s, opts.k2s) > -1)
+    if (std::max(opts.k1s, opts.k2s) > -1)
     {
       std::cout << "    slow controller parameters: " << opts.k1s << " "
                 << opts.k2s << "\n";
@@ -1439,12 +1439,12 @@ static void PrintSlowAdaptivity(Options opts)
       << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
     std::cout << "    fast error accumulation strategy = " << opts.faccum << "\n";
-    if (std::min(opts.k1s, opts.k2s) > -1)
+    if (std::max(opts.k1s, opts.k2s) > -1)
     {
       std::cout << "    slow controller parameters: " << opts.k1s << " "
                 << opts.k2s << "\n";
     }
-    if (std::min(opts.htol_relch, std::min(opts.htol_minfac, opts.htol_maxfac)) >
+    if (std::max(opts.htol_relch, std::max(opts.htol_minfac, opts.htol_maxfac)) >
         -1)
     {
       std::cout << "    HTol controller parameters: " << opts.htol_relch << " "
@@ -1456,7 +1456,7 @@ static void PrintSlowAdaptivity(Options opts)
                  "on order of MRI "
               << ((opts.slow_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    rtol = " << opts.rtol << ", atol = " << opts.atol << "\n";
-    if (std::min(opts.k1s, opts.k2s) > -1)
+    if (std::max(opts.k1s, opts.k2s) > -1)
     {
       std::cout << "    slow controller parameters: " << opts.k1s << " "
                 << opts.k2s << "\n";
@@ -1562,7 +1562,7 @@ static void PrintFastAdaptivity(Options opts)
               << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    fast_rtol = " << opts.fast_rtol
               << ", atol = " << opts.atol << "\n";
-    if (std::min(opts.k1f, opts.k2f) > -1)
+    if (std::max(opts.k1f, opts.k2f) > -1)
     {
       std::cout << "    fast controller parameters: " << opts.k1f << " "
                 << opts.k2f << "\n";
@@ -1573,7 +1573,7 @@ static void PrintFastAdaptivity(Options opts)
               << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    fast_rtol = " << opts.fast_rtol
               << ", atol = " << opts.atol << "\n";
-    if (std::min(opts.k1f, std::min(opts.k2f, opts.k3f)) > -1)
+    if (std::max(opts.k1f, std::max(opts.k2f, opts.k3f)) > -1)
     {
       std::cout << "    fast controller parameters: " << opts.k1f << " "
                 << opts.k2f << " " << opts.k3f << "\n";
@@ -1585,7 +1585,7 @@ static void PrintFastAdaptivity(Options opts)
       << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    fast_rtol = " << opts.fast_rtol
               << ", atol = " << opts.atol << "\n";
-    if (std::min(opts.k1f, opts.k2f) > -1)
+    if (std::max(opts.k1f, opts.k2f) > -1)
     {
       std::cout << "    fast controller parameters: " << opts.k1f << " "
                 << opts.k2f << "\n";
@@ -1597,7 +1597,7 @@ static void PrintFastAdaptivity(Options opts)
       << ((opts.fast_pq == 1) ? "method\n" : "embedding\n");
     std::cout << "    fast_rtol = " << opts.fast_rtol
               << ", atol = " << opts.atol << "\n";
-    if (std::min(opts.k1f, opts.k2f) > -1)
+    if (std::max(opts.k1f, opts.k2f) > -1)
     {
       std::cout << "    fast controller parameters: " << opts.k1f << " "
                 << opts.k2f << "\n";
