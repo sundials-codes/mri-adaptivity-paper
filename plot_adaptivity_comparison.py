@@ -21,7 +21,7 @@ plt.rcParams['figure.constrained_layout.use'] = True
 
 # flags to turn on/off certain plots
 Generate_PDF = True
-Generate_PNG = True
+Generate_PNG = False
 NPlotSlow = 200
 NPlotFast = 1000
 
