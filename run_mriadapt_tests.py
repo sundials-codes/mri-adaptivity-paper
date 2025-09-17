@@ -51,9 +51,11 @@ def controller(method):
     return txt
 
 # utility routine to run a single KPR test, storing the run options and solver statistics
-def runtest_kpr(exe, es, ef, omega, atol, rtol, mri, order, control, showcommand=False):
-    stats = {'es': es, 'ef': ef, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'SlowSteps': 1e10, 'SlowFails': 1e10, 'FastSteps': 1e10, 'FastFails': 1e10, 'Accuracy': 1e10, 'FfEvals': 1e10, 'FseEvals': 1e10, 'FsiEvals': 1e10}
+def runtest_kpr(exe, es, ef, omega, atol, rtol, mri, order, control, extraargs=None, showcommand=False):
+    stats = {'es': es, 'ef': ef, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'extraargs': extraargs, 'ReturnCode': 1, 'SlowSteps': 1e10, 'SlowFails': 1e10, 'FastSteps': 1e10, 'FastFails': 1e10, 'Accuracy': 1e10, 'FfEvals': 1e10, 'FseEvals': 1e10, 'FsiEvals': 1e10}
     runcommand = "%s --es %e --ef %e --w %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, es, ef, omega, atol, rtol, rtol, mri, order) + controller(control)
+    if extraargs is not None:
+        runcommand += ' ' + extraargs
     result = subprocess.run(shlex.split(runcommand), stdout=subprocess.PIPE)
     stats['ReturnCode'] = result.returncode
     if (result.returncode != 0):
@@ -80,9 +82,11 @@ def runtest_kpr(exe, es, ef, omega, atol, rtol, mri, order, control, showcommand
     return stats
 
 # utility routine to run a single Brusselator test, storing the run options and solver statistics
-def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=False):
-    stats = {'ep': ep, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'SlowSteps': 1e10, 'SlowFails': 1e10, 'FastSteps': 1e10, 'FastFails': 1e10, 'Accuracy': 1e10, 'FfEvals': 1e10, 'FseEvals': 1e10, 'FsiEvals': 1e10}
+def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, extraargs=None, showcommand=False):
+    stats = {'ep': ep, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'extraargs': extraargs, 'ReturnCode': 1, 'SlowSteps': 1e10, 'SlowFails': 1e10, 'FastSteps': 1e10, 'FastFails': 1e10, 'Accuracy': 1e10, 'FfEvals': 1e10, 'FseEvals': 1e10, 'FsiEvals': 1e10}
     runcommand = "%s --ep %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, ep, atol, rtol, rtol, mri, order) + controller(control)
+    if extraargs is not None:
+        runcommand += ' ' + extraargs
     result = subprocess.run(shlex.split(runcommand), stdout=subprocess.PIPE)
     stats['ReturnCode'] = result.returncode
     if (result.returncode != 0):
@@ -132,8 +136,9 @@ atol = 1.e-11
 # Parameter arrays to iterate over
 Omegas = [50.0, 500.0]   # KPR
 es = 5.0                 # KPR fast->slow coupling parameter
-ef = 5.0                 # KPR slow->fast coupling parameter
+ef = 0.5                 # KPR slow->fast coupling parameter
 Eps = [1.e-4, 1.e-5]     # Brusselator
+extraargs = '--htol_maxfac 10.0 --faccum 1'
 
 #####################
 # KPR tests
@@ -152,11 +157,11 @@ if (DoKPR):
         for rtol in RTols:
             for method in MRIMethods:
                 for control in DControls:
-                    KPRStats.append(runtest_kpr(Executable, es, ef, omega, atol, rtol, method[0], method[1], control))
+                    KPRStats.append(runtest_kpr(Executable, es, ef, omega, atol, rtol, method[0], method[1], control, extraargs))
                 for control in HTControls:
-                    KPRStats.append(runtest_kpr(Executable, es, ef, omega, atol, rtol, method[0], method[1], control))
+                    KPRStats.append(runtest_kpr(Executable, es, ef, omega, atol, rtol, method[0], method[1], control, extraargs))
                 for control in HhControls:
-                    KPRStats.append(runtest_kpr(HhExecutable, es, ef, omega, atol, rtol, method[0], method[1], control))
+                    KPRStats.append(runtest_kpr(HhExecutable, es, ef, omega, atol, rtol, method[0], method[1], control, extraargs))
 
     KPRDf = pd.DataFrame.from_records(KPRStats)
     print("KPRDf object:")
@@ -181,11 +186,11 @@ if (DoBrusselator):
         for rtol in RTols:
             for method in MRIMethods:
                 for control in DControls:
-                    BrusselatorStats.append(runtest_brusselator(Executable, ep, atol, rtol, method[0], method[1], control))
+                    BrusselatorStats.append(runtest_brusselator(Executable, ep, atol, rtol, method[0], method[1], control, extraargs))
                 for control in HTControls:
-                    BrusselatorStats.append(runtest_brusselator(Executable, ep, atol, rtol, method[0], method[1], control))
+                    BrusselatorStats.append(runtest_brusselator(Executable, ep, atol, rtol, method[0], method[1], control, extraargs))
                 for control in HhControls:
-                    BrusselatorStats.append(runtest_brusselator(HhExecutable, ep, atol, rtol, method[0], method[1], control))
+                    BrusselatorStats.append(runtest_brusselator(HhExecutable, ep, atol, rtol, method[0], method[1], control, extraargs))
 
     BrusselatorDf = pd.DataFrame.from_records(BrusselatorStats)
     print("BrusselatorDf object:")

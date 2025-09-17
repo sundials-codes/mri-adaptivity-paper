@@ -103,9 +103,11 @@ def get_mrihh_step_histories(fname):
 
 
 # utility routine to run a kpr test, storing the run options and solver statistics
-def runtest_kpr(exe, es, ef, omega, atol, rtol, mri, order, control, showcommand=False, removelog=True):
-    stats = {'es': es, 'ef': ef, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
+def runtest_kpr(exe, es, ef, omega, atol, rtol, mri, order, control, extraargs=None, showcommand=False, removelog=True):
+    stats = {'es': es, 'ef': ef, 'omega': omega, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'extraargs': extraargs, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
     runcommand = "%s --es %e --ef %e --w %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, es, ef, omega, atol, rtol, rtol, mri, order) + controller(control)
+    if extraargs is not None:
+        runcommand += ' ' + extraargs
     logfile = 'kpr-log-' + control + '.txt'
     env = os.environ.copy()
     env["SUNLOGGER_INFO_FILENAME"] = logfile
@@ -142,9 +144,11 @@ def runtest_kpr(exe, es, ef, omega, atol, rtol, mri, order, control, showcommand
         os.remove(logfile)
     return stats
 
-def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=False, removelog=True):
-    stats = {'ep': ep, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
+def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, extraargs=None, showcommand=False, removelog=True):
+    stats = {'ep': ep, 'atol': atol, 'rtol': rtol, 'mri_method': mri, 'fast_order': order, 'control': control, 'extraargs': extraargs, 'ReturnCode': 1, 'T': [], 'H': [], 't': [], 'h': [], 'Accuracy': []}
     runcommand = "%s --ep %e --atol %e --rtol %e --fast_rtol %e --mri_method %s --fast_order %d" % (exe, ep, atol, rtol, rtol, mri, order) + controller(control)
+    if extraargs is not None:
+        runcommand += ' ' + extraargs
     logfile = 'bruss-log-' + control + '.txt'
     env = os.environ.copy()
     env["SUNLOGGER_INFO_FILENAME"] = logfile
@@ -183,27 +187,31 @@ def runtest_brusselator(exe, ep, atol, rtol, mri, order, control, showcommand=Fa
 
 
 # common testing parameters
-rtol = 1.e-5
+rtol = 1.e-4
 atol = 1.e-11
 mri_method = "ARKODE_MRI_GARK_ERK33a"
 fast_order = 3
-omega = 50.0  # kpr multirate parameter
+omega = 500.0  # kpr multirate parameter
 es = 5.0      # kpr fast->slow coupling parameter
-ef = 5.0      # kpr slow->fast coupling parameter
+ef = 0.5      # kpr slow->fast coupling parameter
 eps = 1.e-4   # bruss parameter
+extraargs = '--htol_maxfac 10.0 --faccum 1'
 
 # empty statistics objects
 KPRStats = []
 BrussStats = []
 
 # Run both test problems using a few controllers
-KPRStats.append(runtest_kpr(kpr_exe, es, ef, omega, atol, rtol, mri_method, fast_order, 'MRIDec-H312'))
-KPRStats.append(runtest_kpr(kpr_exe, es, ef, omega, atol, rtol, mri_method, fast_order, 'MRIHTol-H211'))
-KPRStats.append(runtest_kpr(kpr_hh_exe, es, ef, omega, atol, rtol, mri_method, fast_order, 'MRICC'))
+MRIDec = 'MRIDec-H211'
+MRIHTol = 'MRIHTol-H211'
+MRIHh = 'MRICC'
+KPRStats.append(runtest_kpr(kpr_exe, es, ef, omega, atol, rtol, mri_method, fast_order, MRIDec, extraargs))
+KPRStats.append(runtest_kpr(kpr_exe, es, ef, omega, atol, rtol, mri_method, fast_order, MRIHTol, extraargs))
+KPRStats.append(runtest_kpr(kpr_hh_exe, es, ef, omega, atol, rtol, mri_method, fast_order, MRIHh, extraargs))
 
-BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, 'MRIDec-H312'))
-BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, 'MRIHTol-H211'))
-BrussStats.append(runtest_brusselator(bruss_hh_exe, eps, atol, rtol, mri_method, fast_order, 'MRICC'))
+BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, MRIDec, extraargs))
+BrussStats.append(runtest_brusselator(bruss_exe, eps, atol, rtol, mri_method, fast_order, MRIHTol, extraargs))
+BrussStats.append(runtest_brusselator(bruss_hh_exe, eps, atol, rtol, mri_method, fast_order, MRIHh, extraargs))
 
 with open('kpr_adapt_comparison_results.pkl', 'wb') as file:
     pickle.dump(KPRStats, file)

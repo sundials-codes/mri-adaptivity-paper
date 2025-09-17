@@ -21,7 +21,7 @@ plt.rcParams['figure.constrained_layout.use'] = True
 
 # flags to turn on/off certain plots
 Generate_PDF = True
-Generate_PNG = False
+Generate_PNG = True
 NPlotSlow = 200
 NPlotFast = 1000
 
@@ -37,8 +37,8 @@ controlcolor = {'MRIHTol-I': cmap(0),
                 'MRIDec-H0321': cmap(7),
                 'MRIDec-H211': cmap(8),
                 'MRIDec-H312': cmap(9),
-                'MRICC': cmap(0),
-                'MRILL': cmap(1),
+                'MRICC': cmap(4),
+                'MRILL': cmap(9),
                 'MRIPI': cmap(2),
                 'MRIPID': cmap(3)}
 
@@ -82,7 +82,7 @@ def do_test_plots(fname, titletxt, picname, slowstride=None, faststride=None):
 
         arr = np.array(runstats['H'])
         if (slowstride == None):
-            sstride = len(arr)//NPlotSlow
+            sstride = max(1,len(arr)//NPlotSlow)
         Hvals = np.mean(arr[:len(arr) - (len(arr) % sstride)].reshape(-1, sstride), axis=1)
         Tvals = (np.array(runstats['T'])[::sstride])[:len(Hvals)]
         ltext = controlname[control] + '\n steps: ' + str(Nslow) + ', ' + str(Nfast) + '\n accuracy: ' + f"{accuracy:.1f}"
@@ -90,7 +90,7 @@ def do_test_plots(fname, titletxt, picname, slowstride=None, faststride=None):
 
         arr = np.array(runstats['h'])
         if (faststride == None):
-            fstride = len(arr)//NPlotFast
+            fstride = max(1,len(arr)//NPlotFast)
         hvals = np.mean(arr[:len(arr) - (len(arr) % fstride)].reshape(-1, fstride), axis=1)
         tvals = (np.array(runstats['t'])[::fstride])[:len(hvals)]
         ax2.semilogy(tvals, hvals, color=pcolor, marker='.', ls='none', label=ltext)
