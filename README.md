@@ -327,7 +327,7 @@ This script runs the following individual statistical analysis modules:
   python3 ./runStats_fixedMethod_Indep_tests.py
 ```
 
-- **runStats_allCtrls.py**: Performs statistical analysis for all controllers on both the Brusselator and KPR test problems.
+- **runStats_allCtrls.py**: Performs statistical analysis for all controllers, for the fast and slow time scales.
 ```bash
   python3 ./runStats_allCtrls.py
 ```
