@@ -15,14 +15,15 @@
 # README
 #
 # This script calculates the z-scores for all controllers (excluding H-h controllers) 
-# for the stiff Brusselator and KPR test problems.
+# for the fast and slow time scales.
 #
 # Output:
 #        - Results are saved in an Excel file named: "All_controllers.xlsx"
-#        - The Excel file contains separate worksheets for each test problem, with each worksheet 
+#        - The Excel file contains separate worksheets for each time scale, with each worksheet 
 #          containing the z-scores of all controllers.
-#        - The average z-score for each controller (across both test problems) is computed and 
-#          saved in the text file: "AvgZscores_AllControllers.txt"
+#        - The average z-score for each controller (across both time scales) is computed and 
+#          saved in the text file: "AvgZscores_AllControllers_"timeScale".txt". So if the fast
+#          the text file will be "AvgZscores_AllControllers_fast.txt"
 # --------------------------------------------------------------------------------------------------------------------------
 
 
@@ -77,15 +78,15 @@ with pd.ExcelWriter(fileName) as writer:
         data.to_excel(writer, sheet_name=sheetName, index=False)
 
 for mt in metric:
-    controllers = ["MRIHTol-I", "MRIHTol-H0321", "MRIHTol-H0211", "MRIHTol-H211", "MRIHTol-H312", "MRIDec-I", "MRIDec-H0321", "MRIDec-H0211", "MRIDec-H211", "MRIDec-H312"]
+    controllers = ["MRIHTol-I", "MRIDec-I", "MRIHTol-H0321", "MRIDec-H0321", "MRIHTol-H0211", "MRIDec-H0211", "MRIHTol-H211", "MRIDec-H211", "MRIHTol-H312",   "MRIDec-H312"]
     ctrl_zscores = {ctrl: [] for ctrl in controllers} #an empty list to store zscores for all controllers for a particular time scale
     sheetName = f"{mt}"
     df_sheet = pd.read_excel(fileName, sheet_name=sheetName)
 
     for ctrl in controllers:
-            # Filter rows of a worksheet for a particular controller
-            zScore = df_sheet[df_sheet["Controller"] == ctrl]["zScore"].iloc[0] # since the zscore values are the same just pick one
-            ctrl_zscores[ctrl].append(zScore)
+        # Filter rows of a worksheet for a particular controller
+        zScore = df_sheet[df_sheet["Controller"] == ctrl]["zScore"].iloc[0] # since the zscore values are the same just pick one
+        ctrl_zscores[ctrl].append(zScore)
             
     textFileName = f"AvgZscores_AllControllers_{mt}.txt"
     with open(textFileName, "w") as file:
@@ -98,36 +99,4 @@ for mt in metric:
             zScoreList = ctrl_zscores[ctrl]
             avgZscore = sum(zScoreList)/len(zScoreList)
             file.write(f"{ctrl:50} | {avgZscore:.14f}\n")
-
-
-# # compute the average z-score of controller across each worksheet
-# xls = pd.ExcelFile(fileName)
-# sheetNames = xls.sheet_names
-
-# controllers = ["MRIHTol-I", "MRIHTol-H0321", "MRIHTol-H0211", "MRIHTol-H211", "MRIHTol-H312", "MRIDec-I", "MRIDec-H0321", "MRIDec-H0211", "MRIDec-H211", "MRIDec-H312"]
-        
-# # create empty lists to store the z-scores of each controller  
-# ctrl_zscores = {ctrl: [] for ctrl in controllers}
-
-# for sheet in sheetNames:
-#     df_sheet = pd.read_excel(fileName, sheet_name=sheet)
-#     for ctrl in controllers:
-#         # Filter rows of a worksheet for a particular controller
-#         zScore = df_sheet[df_sheet["Controller"] == ctrl]["zScore"].iloc[0] # since the zscore values are the same just pick one
-#         ctrl_zscores[ctrl].append(zScore)
-    
-# # compute the average zscores
-# textFileName = f"AvgZscores_AllControllers.txt"
-# with open(textFileName, "w") as file:
-#         file.write(f"********************************************************************************************** \n")
-#         file.write(f"Below are the average z-scores for the various controllers aggregated across the stiff Brusselator and KPR test problems. \n")
-#         file.write(f"********************************************************************************************** \n\n")
-#         file.write(f"{'Controller':50} | Average z-score\n")
-#         file.write(f"{'-'*75}\n")
-#         for ctrl in controllers:
-#             zScoreList = ctrl_zscores[ctrl]
-#             avgZscore = sum(zScoreList)/len(zScoreList)
-#             file.write(f"{ctrl:50} | {avgZscore:.14f}\n")
-
-
 
