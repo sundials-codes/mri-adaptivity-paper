@@ -13,7 +13,7 @@ import subprocess
 import shlex
 import sys
 import pickle
-sys.path.append('sundials-v7.3.0/tools')
+sys.path.append('sundials-v7.5.0/tools')
 from suntools import logs as sunlog
 
 # testing executables

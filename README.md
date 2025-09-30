@@ -77,8 +77,8 @@ We recommend that users follow the instructios below for installing both version
 [The SUNDIALS build instructions are linked here](https://sundials.readthedocs.io/en/latest/sundials/Install_link.html#building-and-installing-with-cmake).  Note that of the many SUNDIALS build options, this repository requires only a minimal SUNDIALS build.  The following steps can be used to build SUNDIALS using this minimal configuration:
 
 ```bash
-  mkdir sundials-v7.3.0/build
-  cd sundials-v7.3.0/build
+  mkdir sundials-v7.5.0/build
+  cd sundials-v7.5.0/build
   cmake -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Release ..
   make -j install
   cd -
@@ -93,8 +93,8 @@ We recommend that users follow the instructios below for installing both version
 Additionally, to run the tests that will automatically log all internal time steps at each time scale, allowing plots of the "adaptivity history," you should build SUNDIALS two more times with additional logging enabled:
 
 ```bash
-  mkdir sundials-v7.3.0/build-logging
-  cd sundials-v7.3.0/build-logging
+  mkdir sundials-v7.5.0/build-logging
+  cd sundials-v7.5.0/build-logging
   cmake -DCMAKE_INSTALL_PREFIX=../install-logging -DCMAKE_BUILD_TYPE=Release -DSUNDIALS_LOGGING_LEVEL=4 ..
   make clean
   make -j install
@@ -144,7 +144,7 @@ The codes that will link to each of the two above SUNDIALS installations must be
   make -j install
   cd ../../
 
-  cd src-v7.3.0
+  cd src-v7.5.0
   mkdir build
   cd build
   cmake ..
@@ -173,7 +173,7 @@ To build the additional examples that enable "logging", use the commands:
   make -j install
   cd ../../
 
-  cd src-v7.3.0-logging
+  cd src-v7.5.0-logging
   mkdir build
   cd build
   cmake ..

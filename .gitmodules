@@ -1,5 +1,5 @@
 [submodule "sundials-v7.3.0"]
-	path = sundials-v7.3.0
+	path = sundials-v7.5.0
 	url = git@github.com:LLNL/sundials.git
 [submodule "sundials-mrihh"]
 	path = sundials-mrihh

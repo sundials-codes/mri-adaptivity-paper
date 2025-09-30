@@ -51,8 +51,8 @@ mark_as_advanced(FORCE CMAKE_INSTALL_RPATH_USE_LINK_PATH)
 set(bindir "${CMAKE_CURRENT_SOURCE_DIR}/../bin")
 
 #-----------
-# Build these files against the top-level installation sundials-v7.3.0/install-logging
-set(SUNDIALS_V730_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../sundials-v7.3.0/install-logging"
+# Build these files against the top-level installation sundials-v7.5.0/install
+set(SUNDIALS_V730_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../sundials-v7.5.0/install"
   CACHE PATH "Root directory of SUNDIALS install")
 
 find_package(SUNDIALS REQUIRED
@@ -64,9 +64,9 @@ find_package(SUNDIALS REQUIRED
 )
 
 #-----------
-# setup compilation for ark_kpr_nestedmri_logging
+# setup compilation for ark_kpr_nestedmri
 set(sources ark_kpr_nestedmri.cpp)
-set(target ark_kpr_nestedmri_logging)
+set(target ark_kpr_nestedmri)
 add_executable(${target} ${sources})
 target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${target} PRIVATE
@@ -74,9 +74,29 @@ target_link_libraries(${target} PRIVATE
 install(TARGETS ${target} DESTINATION ${bindir})
 
 #-----------
-# setup compilation for ark_test_brusselator_mriadapt_logging
+# setup compilation for ark_test_accumerror_brusselator
+set(sources ark_test_accumerror_brusselator.cpp)
+set(target ark_test_accumerror_brusselator)
+add_executable(${target} ${sources})
+target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${target} PRIVATE
+  SUNDIALS::arkode SUNDIALS::nvecserial)
+install(TARGETS ${target} DESTINATION ${bindir})
+
+#-----------
+# setup compilation for ark_test_accumerror_kpr
+set(sources ark_test_accumerror_kpr.cpp)
+set(target ark_test_accumerror_kpr)
+add_executable(${target} ${sources})
+target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${target} PRIVATE
+  SUNDIALS::arkode SUNDIALS::nvecserial)
+install(TARGETS ${target} DESTINATION ${bindir})
+
+#-----------
+# setup compilation for ark_test_brusselator_mriadapt
 set(sources ark_test_brusselator_mriadapt.cpp)
-set(target ark_test_brusselator_mriadapt_logging)
+set(target ark_test_brusselator_mriadapt)
 add_executable(${target} ${sources})
 target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${target} PRIVATE
@@ -84,12 +104,31 @@ target_link_libraries(${target} PRIVATE
 install(TARGETS ${target} DESTINATION ${bindir})
 
 #-----------
-# setup compilation for ark_test_kpr_mriadapt_logging
+# setup compilation for ark_test_kpr_mriadapt
 set(sources ark_test_kpr_mriadapt.cpp)
-set(target ark_test_kpr_mriadapt_logging)
+set(target ark_test_kpr_mriadapt)
 add_executable(${target} ${sources})
 target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${target} PRIVATE
   SUNDIALS::arkode SUNDIALS::nvecserial)
 install(TARGETS ${target} DESTINATION ${bindir})
 
+#-----------
+# setup compilation for ark_test_slowerror_brusselator
+set(sources ark_test_slowerror_brusselator.cpp)
+set(target ark_test_slowerror_brusselator)
+add_executable(${target} ${sources})
+target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${target} PRIVATE
+  SUNDIALS::arkode SUNDIALS::nvecserial)
+install(TARGETS ${target} DESTINATION ${bindir})
+
+#-----------
+# setup compilation for ark_test_slowerror_kpr
+set(sources ark_test_slowerror_kpr.cpp)
+set(target ark_test_slowerror_kpr)
+add_executable(${target} ${sources})
+target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${target} PRIVATE
+  SUNDIALS::arkode SUNDIALS::nvecserial)
+install(TARGETS ${target} DESTINATION ${bindir})
